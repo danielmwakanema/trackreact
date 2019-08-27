@@ -7,6 +7,7 @@ import store from "./redux/store";
 
 import AdminLayout from "layouts/Admin/Admin.jsx";
 import RTLLayout from "layouts/RTL/RTL.jsx";
+import Login from "views/User/Login.jsx";
 
 import "assets/scss/black-dashboard-react.scss";
 import "assets/demo/demo.css";
@@ -20,7 +21,8 @@ ReactDOM.render(
       <Switch>
         <Route path="/admin" render={props => <AdminLayout {...props} />} />
         <Route path="/rtl" render={props => <RTLLayout {...props} />} />
-        <Redirect from="/" to="/admin/dashboard" />
+        <Route path="/login" render={props => <Login {...props} /> } />
+        <Redirect from="/" to="/login" />
       </Switch>
     </Router>
   </Provider>,
