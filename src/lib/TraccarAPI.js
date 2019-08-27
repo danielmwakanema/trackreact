@@ -1,5 +1,6 @@
-import Axios from 'axios'
+import Axios from 'axios';
+import Config from '../config/traccar.json';
 
 export default Axios.create({
-  baseURL: `${process.env.REACT_APP_TRACCAR_PROTOCOL}://${process.env.REACT_APP_TRACCAR_HOST}:${process.env.REACT_APP_TRACCAR_PORT}`
+  baseURL: `${Config.protocol}://${Config.host}:${Config.port}`
 })
