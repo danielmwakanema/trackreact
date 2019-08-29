@@ -1,4 +1,5 @@
 import React from "react";
+import { connect } from 'react-redux';
 
 import {
   Row,
@@ -16,8 +17,11 @@ import {
 import InfoModal from '../../components/Modals/InfoModal';
 
 import TraccarAPI from "../../lib/TraccarAPI";
+import UserAuthService from '../../Services/UserAuthService';
 
 import "./Login.css";
+
+const AuthHelper = new UserAuthService(TraccarAPI);
 
 class Login extends React.Component {
   constructor(props) {
@@ -35,28 +39,23 @@ class Login extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.showModal = this.showModal.bind(this);
     this.hideModal = this.hideModal.bind(this);
-  }
-
-  async login(email, password) {
-    try {
-      const response = await TraccarAPI.post('/api/session',
-                                            new URLSearchParams(`email=${email}&password=${password}`));
-      response.status === 200 && this.props.history.push('/admin/dashboard')
-    } catch (e) {
-      this.showModal('Error', 'Wrong email/password.')
-      console.error(e.message)
-    }
+    this.login = this.login.bind(this)
   }
 
   handleChange(event) {
     this.setState({ [event.target.name]: event.target.value });
   }
 
+  async login () {
+    if (await AuthHelper.login(this.state.email, this.state.password)) {
+      this.props.history.push('/admin/dashboard');
+    } else this.showModal('Error', 'Wrong email/password.');
+  }
+
   async handleSubmit(event) {
     event.preventDefault();
-
     if (this.inputIsValid()) {
-      await this.login(this.state.email, this.state.password);
+      this.login()
     } else this.showModal('Error', 'Your email and password is required.');
   }
 
@@ -125,4 +124,10 @@ class Login extends React.Component {
   }
 }
 
-export default Login;
+const mapDispatchToProps = dispatch => {
+  return {
+    setUserCredentials: dispatch.setUserCredentials
+  }
+}
+
+export default connect(null, mapDispatchToProps)(Login);
