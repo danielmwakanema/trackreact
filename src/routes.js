@@ -2,6 +2,8 @@ import Dashboard from "views/User/Dashboard.jsx";
 import DeviceLinks from './Routes/Devices';
 import GeofenceLinks from './Routes/Geofences';
 import DriverLinks from './Routes/Drivers';
+import GroupLinks from './Routes/Groups';
+import MaintenceLinks from './Routes/Maintenances';
 
 var routes = [
   {
@@ -28,6 +30,18 @@ var routes = [
     icon: "tim-icons icon-delivery-fast",
     layout: "/admin",
     children: DriverLinks
+  },
+  {
+    name: "Groups",
+    icon: "tim-icons icon-paper",
+    layout: "/admin",
+    children: GroupLinks
+  },
+  {
+    name: "Maintenance",
+    icon: "tim-icons icon-settings-gear-63",
+    layout: "/admin",
+    children: MaintenceLinks
   }
 ];
 
