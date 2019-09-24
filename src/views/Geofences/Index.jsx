@@ -1,4 +1,5 @@
 import React from "react";
+import { connect } from "react-redux";
 
 // reactstrap components
 import {
@@ -11,14 +12,13 @@ import {
   Col
 } from "reactstrap";
 
-import './Index.css';
+import { userGeofences } from "../../Redux/actions/geofenceActions";
+
+import "./Index.css";
 
 class Index extends React.Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      geofences: []
-    }
+  componentDidMount() {
+    this.props.userGeofences();
   }
 
   render() {
@@ -32,60 +32,33 @@ class Index extends React.Component {
                   <CardTitle tag="h4">Geofence List</CardTitle>
                 </CardHeader>
                 <CardBody>
-                  <Table className="tablesorter" responsive>
-                    <thead className="text-primary">
-                      <tr>
-                        <th>Name</th>
-                        <th>Country</th>
-                        <th>City</th>
-                        <th className="text-center">Salary</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>Dakota Rice</td>
-                        <td>Niger</td>
-                        <td>Oud-Turnhout</td>
-                        <td className="text-center">$36,738</td>
-                      </tr>
-                      <tr>
-                        <td>Minerva Hooper</td>
-                        <td>Curaçao</td>
-                        <td>Sinaai-Waas</td>
-                        <td className="text-center">$23,789</td>
-                      </tr>
-                      <tr>
-                        <td>Sage Rodriguez</td>
-                        <td>Netherlands</td>
-                        <td>Baileux</td>
-                        <td className="text-center">$56,142</td>
-                      </tr>
-                      <tr>
-                        <td>Philip Chaney</td>
-                        <td>Korea, South</td>
-                        <td>Overland Park</td>
-                        <td className="text-center">$38,735</td>
-                      </tr>
-                      <tr>
-                        <td>Doris Greene</td>
-                        <td>Malawi</td>
-                        <td>Feldkirchen in Kärnten</td>
-                        <td className="text-center">$63,542</td>
-                      </tr>
-                      <tr>
-                        <td>Mason Porter</td>
-                        <td>Chile</td>
-                        <td>Gloucester</td>
-                        <td className="text-center">$78,615</td>
-                      </tr>
-                      <tr>
-                        <td>Jon Porter</td>
-                        <td>Portugal</td>
-                        <td>Gloucester</td>
-                        <td className="text-center">$98,615</td>
-                      </tr>
-                    </tbody>
-                  </Table>
+                  {this.props.geofences.length > 0 && (
+                    <Table className="tablesorter" responsive>
+                      <thead className="text-primary">
+                        <tr>
+                          <th>Name</th>
+                          <th>Description</th>
+                          <th>Area</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <>
+                          {this.props.geofences.map(geofence => {
+                            return (
+                              <tr key={geofence.id}>
+                                <td>{geofence.name}</td>
+                                <td>{geofence.description}</td>
+                                <td>{geofence.area}</td>
+                              </tr>
+                            );
+                          })}
+                        </>
+                      </tbody>
+                    </Table>
+                  )}
+                  {this.props.geofences.length === 0 && (
+                    <p>You have no geofences at the moment.</p>
+                  )}
                 </CardBody>
               </Card>
             </Col>
@@ -96,4 +69,19 @@ class Index extends React.Component {
   }
 }
 
-export default Index;
+const mapStateToProps = state => {
+  return {
+    geofences: state.Geofence.geofences
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    userGeofences: () => dispatch(userGeofences())
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Index);
