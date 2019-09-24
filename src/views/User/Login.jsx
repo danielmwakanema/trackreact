@@ -1,5 +1,5 @@
 import React from "react";
-import { connect } from 'react-redux';
+import { connect } from "react-redux";
 
 import {
   Row,
@@ -13,62 +13,46 @@ import {
   CardBody,
   CardTitle
 } from "reactstrap";
-
-import InfoModal from '../../components/Modals/InfoModal';
-
-import TraccarAPI from "../../lib/TraccarAPI";
-import UserAuthService from '../../Services/UserAuthService';
-
 import "./Login.css";
 
-const AuthHelper = new UserAuthService(TraccarAPI);
+import { login } from "../../Redux/actions/userActions";
 
 class Login extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      email: "",
-      password: "",
-      showModal: false,
-      modalMessage: '',
-      modalHeader: ''
-    };
+    this.state = { email: "", password: "" };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.showModal = this.showModal.bind(this);
-    this.hideModal = this.hideModal.bind(this);
-    this.login = this.login.bind(this)
+  }
+
+  componentWillUnmount() {
+    this.setState({});
+  }
+
+  componentDidUpdate (previousProps) {
+    if (this.props.userIsAvailable !== previousProps.userIsAvailable) {
+      this.props.history.push("/admin/dashboard")
+    }
   }
 
   handleChange(event) {
     this.setState({ [event.target.name]: event.target.value });
   }
 
-  async login () {
-    if (await AuthHelper.login(this.state.email, this.state.password)) {
-      this.props.history.push('/admin/dashboard');
-    } else this.showModal('Error', 'Wrong email/password.');
-  }
-
-  async handleSubmit(event) {
+  handleSubmit(event) {
     event.preventDefault();
     if (this.inputIsValid()) {
-      this.login()
-    } else this.showModal('Error', 'Your email and password is required.');
+      this.props.login({
+        email: this.state.email,
+        password: this.state.password
+      });
+    }
   }
 
   inputIsValid() {
     return this.state.email.length && this.state.password.length;
-  }
-
-  showModal (title, message) {
-    this.setState({ modalHeader: title, modalMessage: message, showModal: true })
-  }
-
-  hideModal () {
-    this.setState({ showModal: false })
   }
 
   render() {
@@ -85,11 +69,11 @@ class Login extends React.Component {
                   <FormGroup>
                     <Label for="exampleEmail">Email address</Label>
                     <Input
-                      type="email"
+                      type="text"
                       name="email"
                       id="exampleEmail"
                       placeholder="Enter email"
-                      onChange={this.handleChange}
+                      onChange={ event => this.handleChange(event) }
                     />
                     <FormText color="muted">
                       We'll never share your email with anyone else.
@@ -103,13 +87,13 @@ class Login extends React.Component {
                       id="examplePassword"
                       placeholder="Password"
                       autoComplete="off"
-                      onChange={this.handleChange}
+                      onChange={ event => this.handleChange(event) }
                     />
                   </FormGroup>
                   <Button
                     color="primary"
                     type="submit"
-                    onClick={this.handleSubmit}
+                    onClick={ event => this.handleSubmit(event) }
                   >
                     Submit
                   </Button>
@@ -118,16 +102,24 @@ class Login extends React.Component {
             </Card>
           </Col>
         </Row>
-        { this.state.showModal && <InfoModal header={this.state.modalHeader } message={this.state.modalMessage} toggle={this.hideModal} /> }
       </div>
     );
   }
 }
 
+const mapStateToProps = state => {
+  return {
+    userIsAvailable: state.User.email.length > 0 && state.User.password.length > 0
+  };
+};
+
 const mapDispatchToProps = dispatch => {
   return {
-    setUserCredentials: dispatch.setUserCredentials
-  }
-}
+    login: data => dispatch(login(data))
+  };
+};
 
-export default connect(null, mapDispatchToProps)(Login);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Login);
