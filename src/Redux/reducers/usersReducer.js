@@ -1,14 +1,16 @@
+import { LOGIN_SUCCESS } from '../actions/actionTypes';
+
 const init = {
-  email: '',
-  password: ''
-}
+  id: null,
+  email: "",
+  password: ""
+};
 
 export default (state = init, action) => {
   switch (action.type) {
-    case 'SET_USER_CREDENTIALS':
-      const res = state
-      return Object.assign(res, action.payload)
+    case LOGIN_SUCCESS:
+      return Object.assign({}, state, action.payload);
     default:
-      return state
+      return state;
   }
-}
+};

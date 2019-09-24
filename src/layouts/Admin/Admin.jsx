@@ -95,18 +95,18 @@ class Admin extends React.Component {
         return routes[i].name;
       }
     }
-    return "Brand";
+    return "TRACKREACT";
   };
   render() {
     return (
       <>
-        <div className="wrapper">
+        <div className="wrapper"  style={{ overflow: "scroll" }}>
           <Sidebar
             {...this.props}
             routes={routes}
             bgColor={this.state.backgroundColor}
             logo={{
-              outterLink: "#",
+              outterLink: null,
               text: "TRACKREACT",
               imgSrc: logo
             }}

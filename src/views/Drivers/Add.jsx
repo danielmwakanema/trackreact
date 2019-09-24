@@ -1,4 +1,5 @@
 import React from "react";
+import { connect } from "react-redux";
 
 // reactstrap components
 import {
@@ -14,13 +15,74 @@ import {
   Col
 } from "reactstrap";
 
+import { addDriver } from "../../Redux/actions/driverActions";
+
 class Add extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      name: "",
+      uniqueId: "",
+      licenseNumber: "",
+      licenseExpiryDate: "",
+      homeAddress: ""
+    };
+
+    this.handleInputChange = this.handleInputChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.inputIsValid = this.inputIsValid.bind(this);
+    this.prepPayload = this.prepPayload.bind(this);
+    this.createDriver = this.createDriver.bind(this);
+  }
+
+  handleInputChange = event => {
+    this.setState({ [event.target.name]: event.target.value });
+  };
+
+  async createDriver() {
+    const payload = this.prepPayload();
+    this.props.addDriver(payload);
+  }
+
+  async handleSubmit() {
+    if (this.inputIsValid()) {
+      await this.createDriver();
+    } else {
+      alert("The specified input is not valid.");
+    }
+  }
+
+  inputIsValid() {
+    for (const [, val] of Object.entries(this.state)) {
+      if (val === "" || val === undefined) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  prepPayload = () => {
+    return {
+      name: this.state.name,
+      uniqueId: this.state.uniqueId,
+      attributes: {
+        licenseNumber: this.state.licenseNumber,
+        licenseExpiryDate: this.state.licenseExpiryDate,
+        homeAddress: this.state.homeAddress
+      }
+    };
+  };
+
+  componentWillUnmount() {
+    this.setState({});
+  }
+
   render() {
     return (
       <>
         <div className="content">
           <Row>
-            <Col md="12">
+            <Col md="7">
               <Card>
                 <CardHeader>
                   <h5 className="title">Add Driver</h5>
@@ -28,109 +90,70 @@ class Add extends React.Component {
                 <CardBody>
                   <Form>
                     <Row>
-                      <Col className="pr-md-1" md="5">
+                      <Col className="pr-md-1" md="11">
                         <FormGroup>
-                          <label>Company (disabled)</label>
+                          <label>Unique ID</label>
                           <Input
-                            defaultValue="Creative Code Inc."
-                            disabled
-                            placeholder="Company"
+                            defaultValue=""
+                            placeholder="Unique identifier"
                             type="text"
-                          />
-                        </FormGroup>
-                      </Col>
-                      <Col className="px-md-1" md="3">
-                        <FormGroup>
-                          <label>Username</label>
-                          <Input
-                            defaultValue="michael23"
-                            placeholder="Username"
-                            type="text"
-                          />
-                        </FormGroup>
-                      </Col>
-                      <Col className="pl-md-1" md="4">
-                        <FormGroup>
-                          <label htmlFor="exampleInputEmail1">
-                            Email address
-                          </label>
-                          <Input placeholder="mike@email.com" type="email" />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col className="pr-md-1" md="6">
-                        <FormGroup>
-                          <label>First Name</label>
-                          <Input
-                            defaultValue="Mike"
-                            placeholder="Company"
-                            type="text"
-                          />
-                        </FormGroup>
-                      </Col>
-                      <Col className="pl-md-1" md="6">
-                        <FormGroup>
-                          <label>Last Name</label>
-                          <Input
-                            defaultValue="Andrew"
-                            placeholder="Last Name"
-                            type="text"
+                            name="uniqueId"
+                            onChange={this.handleInputChange}
                           />
                         </FormGroup>
                       </Col>
                     </Row>
                     <Row>
-                      <Col md="12">
+                      <Col className="pr-md-1" md="11">
                         <FormGroup>
-                          <label>Address</label>
+                          <label>Fullame</label>
                           <Input
-                            defaultValue="Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09"
-                            placeholder="Home Address"
+                            defaultValue=""
+                            placeholder="Name"
                             type="text"
+                            name="name"
+                            onChange={this.handleInputChange}
                           />
                         </FormGroup>
                       </Col>
                     </Row>
                     <Row>
-                      <Col className="pr-md-1" md="4">
+                      <Col className="pr-md-1" md="11">
                         <FormGroup>
-                          <label>City</label>
+                          <label>License Number</label>
                           <Input
-                            defaultValue="Mike"
-                            placeholder="City"
+                            defaultValue=""
+                            placeholder="License number"
                             type="text"
+                            name="licenseNumber"
+                            onChange={this.handleInputChange}
                           />
-                        </FormGroup>
-                      </Col>
-                      <Col className="px-md-1" md="4">
-                        <FormGroup>
-                          <label>Country</label>
-                          <Input
-                            defaultValue="Andrew"
-                            placeholder="Country"
-                            type="text"
-                          />
-                        </FormGroup>
-                      </Col>
-                      <Col className="pl-md-1" md="4">
-                        <FormGroup>
-                          <label>Postal Code</label>
-                          <Input placeholder="ZIP Code" type="number" />
                         </FormGroup>
                       </Col>
                     </Row>
                     <Row>
-                      <Col md="8">
+                      <Col className="pr-md-1" md="11">
                         <FormGroup>
-                          <label>About Me</label>
+                          <label>License Expiry Date</label>
                           <Input
-                            cols="80"
-                            defaultValue="Lamborghini Mercy, Your chick she so thirsty, I'm in
-                            that two seat Lambo."
-                            placeholder="Here can be your description"
-                            rows="4"
+                            defaultValue=""
+                            type="date"
+                            name="licenseExpiryDate"
+                            onChange={this.handleInputChange}
+                          />
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col className="pr-md-1" md="11">
+                        <FormGroup>
+                          <label>Home Addess</label>
+                          <Input
+                            defaultValue=""
+                            placeholder="Home address"
                             type="textarea"
+                            name="homeAddress"
+                            onChange={this.handleInputChange}
                           />
                         </FormGroup>
                       </Col>
@@ -138,7 +161,12 @@ class Add extends React.Component {
                   </Form>
                 </CardBody>
                 <CardFooter>
-                  <Button className="btn-fill" color="primary" type="submit">
+                  <Button
+                    className="btn-fill"
+                    color="primary"
+                    type="submit"
+                    onClick={this.handleSubmit}
+                  >
                     Save
                   </Button>
                 </CardFooter>
@@ -151,4 +179,15 @@ class Add extends React.Component {
   }
 }
 
-export default Add;
+const mapDispatchToProps = dispatch => {
+  return {
+    addDriver: payload => {
+      dispatch(addDriver(payload));
+    }
+  };
+};
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(Add);

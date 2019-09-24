@@ -12,20 +12,13 @@ import {
   Col
 } from "reactstrap";
 
-import {
-  userDrivers,
-  resetUserDriversList
-} from "../../Redux/actions/driverActions";
+import { userMaintenances } from "../../Redux/actions/maintenanceActions";
 
 import "./Index.css";
 
 class Index extends React.Component {
   componentDidMount() {
-    this.props.userDrivers();
-  }
-
-  componentWillUnmount() {
-    this.props.resetUserDriversList();
+    this.props.userMaintenances();
   }
 
   render() {
@@ -36,30 +29,28 @@ class Index extends React.Component {
             <Col md="12">
               <Card className="card-plain">
                 <CardHeader>
-                  <CardTitle tag="h4">Driver List</CardTitle>
+                  <CardTitle tag="h4">Maintenance List</CardTitle>
                 </CardHeader>
                 <CardBody>
-                  {this.props.drivers.length > 0 && (
+                  {this.props.maintenances.length > 0 && (
                     <Table className="tablesorter" responsive>
                       <thead className="text-primary">
                         <tr>
-                          <th>Unique Identifier</th>
                           <th>Name</th>
-                          <th>License Number</th>
-                          <th>License Expiry Date</th>
-                          <th>Address</th>
+                          <th>Type</th>
+                          <th>Start</th>
+                          <th>Period</th>
                         </tr>
                       </thead>
                       <tbody>
                         <>
-                          {this.props.drivers.map(driver => {
+                          {this.props.maintenances.map(maintenance => {
                             return (
-                              <tr key={driver.uniqueId}>
-                                <td>{driver.uniqueId}</td>
-                                <td>{driver.name}</td>
-                                <td>{driver.attributes.licenseNumber}</td>
-                                <td>{driver.attributes.licenseExpiryDate}</td>
-                                <td>{driver.attributes.homeAddress}</td>
+                              <tr key={maintenance.id}>
+                                <td>{maintenance.name}</td>
+                                <td>{maintenance.type}</td>
+                                <td>{maintenance.start}</td>
+                                <td>{maintenance.period}</td>
                               </tr>
                             );
                           })}
@@ -67,8 +58,8 @@ class Index extends React.Component {
                       </tbody>
                     </Table>
                   )}
-                  {this.props.drivers.length === 0 && (
-                    <p>You have no drivers at the moment.</p>
+                  {this.props.maintenances.length === 0 && (
+                    <p>You have no maintenances at the moment.</p>
                   )}
                 </CardBody>
               </Card>
@@ -82,14 +73,13 @@ class Index extends React.Component {
 
 const mapStateToProps = state => {
   return {
-    drivers: state.Driver.drivers
+    maintenances: state.Maintenance.maintenances
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    userDrivers: () => dispatch(userDrivers()),
-    resetUserDriversList: () => dispatch(resetUserDriversList())
+    userMaintenances: () => dispatch(userMaintenances())
   };
 };
 

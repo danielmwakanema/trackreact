@@ -18,14 +18,15 @@
     "react": "^16.9.0",
     "react-chartjs-2": "*",
     "react-dom": "^16.9.0",
-    "react-google-maps": "*",
+    "react-google-maps": "^9.4.5",
     "react-notification-alert": "*",
     "react-redux": "^7.1.1",
     "react-router-dom": "^5.0.1",
     "react-scripts": "*",
     "reactstrap": "*",
     "redux": "*",
-    "redux-thunk": "*"
+    "redux-thunk": "*",
+    "wicket": "^1.3.4"
   },
   "scripts": {
     "start": "react-scripts start",

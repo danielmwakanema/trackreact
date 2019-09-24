@@ -15,38 +15,38 @@ import {
   Col
 } from "reactstrap";
 
-import { addDevice } from "../../Redux/actions/deviceActions";
+import { addMaintenance } from "../../Redux/actions/maintenanceActions";
 
 class Add extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       name: "",
-      uniqueId: "",
-      model: "",
-      category: ""
+      type: "",
+      start: "",
+      period: ""
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.inputIsValid = this.inputIsValid.bind(this);
     this.prepPayload = this.prepPayload.bind(this);
-    this.createDevice = this.createDevice.bind(this);
+    this.createMaintenance = this.createMaintenance.bind(this);
   }
 
   handleInputChange = event => {
     this.setState({ [event.target.name]: event.target.value });
   };
 
-  async createDevice() {
+  async createMaintenance() {
     const payload = this.prepPayload();
-    this.props.addDevice(payload);
+    this.props.addMaintenance(payload);
   }
 
   async handleSubmit(event) {
     event.preventDefault();
     if (this.inputIsValid()) {
-      await this.createDevice();
+      await this.createMaintenance();
     } else {
       alert("The specified input is not valid.");
     }
@@ -64,11 +64,9 @@ class Add extends React.Component {
   prepPayload = () => {
     return {
       name: this.state.name,
-      uniqueId: this.state.uniqueId,
-      status: document.getElementById('status').value,
-      disabled: Boolean(document.getElementById('disabled').value),
-      category: this.state.category,
-      model: this.state.model
+      type: this.state.type,
+      start: this.state.start,
+      period: this.state.period
     };
   };
 
@@ -84,24 +82,10 @@ class Add extends React.Component {
             <Col md="7">
               <Card>
                 <CardHeader>
-                  <h5 className="title">Add Device</h5>
+                  <h5 className="title">Add Maintenance</h5>
                 </CardHeader>
                 <CardBody>
                   <Form>
-                    <Row>
-                      <Col className="pr-md-1" md="11">
-                        <FormGroup>
-                          <label>Unique ID</label>
-                          <Input
-                            defaultValue=""
-                            placeholder="Unique identifier"
-                            type="text"
-                            name="uniqueId"
-                            onChange={this.handleInputChange}
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
                     <Row>
                       <Col className="pr-md-1" md="11">
                         <FormGroup>
@@ -119,44 +103,12 @@ class Add extends React.Component {
                     <Row>
                       <Col className="pr-md-1" md="11">
                         <FormGroup>
-                          <label>Status</label>
-                          <select
-                            id="status"
-                            name="status"
-                            onChange={this.handleInputChange}
-                            className={"form-control"}
-                          >
-                            <option value="Active">Active</option>
-                            <option value="Inactive">Inactive</option>
-                          </select>
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col className="pr-md-1" md="11">
-                        <FormGroup>
-                          <label>Disabled</label>
-                          <select
-                            id="disabled"
-                            name="disabled"
-                            onChange={this.handleInputChange}
-                            className={"form-control"}
-                          >
-                            <option value="true">Yes</option>
-                            <option value="false">No</option>
-                          </select>
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col className="pr-md-1" md="11">
-                        <FormGroup>
-                          <label>Model</label>
+                          <label>Type</label>
                           <Input
                             defaultValue=""
                             type="text"
                             placeholder="XAB112"
-                            name="model"
+                            name="type"
                             onChange={this.handleInputChange}
                           />
                         </FormGroup>
@@ -165,12 +117,26 @@ class Add extends React.Component {
                     <Row>
                       <Col className="pr-md-1" md="11">
                         <FormGroup>
-                          <label>Category</label>
+                          <label>Start</label>
                           <Input
                             defaultValue=""
-                            type="text"
-                            placeholder="Cab"
-                            name="category"
+                            type="number"
+                            placeholder="0"
+                            name="start"
+                            onChange={this.handleInputChange}
+                          />
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col className="pr-md-1" md="11">
+                        <FormGroup>
+                          <label>Period</label>
+                          <Input
+                            defaultValue=""
+                            type="number"
+                            placeholder="0"
+                            name="period"
                             onChange={this.handleInputChange}
                           />
                         </FormGroup>
@@ -199,8 +165,8 @@ class Add extends React.Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    addDevice: payload => {
-      dispatch(addDevice(payload));
+    addMaintenance: payload => {
+      dispatch(addMaintenance(payload));
     }
   };
 };
