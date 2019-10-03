@@ -38,7 +38,6 @@ class Index extends React.Component {
                         <tr>
                           <th>Name</th>
                           <th>Description</th>
-                          <th>Area</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -48,7 +47,6 @@ class Index extends React.Component {
                               <tr key={geofence.id}>
                                 <td>{geofence.name}</td>
                                 <td>{geofence.description}</td>
-                                <td>{geofence.area}</td>
                               </tr>
                             );
                           })}
