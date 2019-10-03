@@ -42,7 +42,6 @@ class Dashboard extends React.Component {
 
   componentWillUnmount() {
     this.unwatchLocation();
-    this.setState({});
   }
 
   watchLocation() {
