@@ -1,9 +1,16 @@
 import Dashboard from "views/User/Dashboard.jsx";
+
+import DeviceIndex from './views/Devices/Index';
+import GeofenceIndex from './views/Geofences/Index';
+import GroupIndex from './views/Groups/Index';
+import DriverIndex from './views/Drivers/Index';
+import MaintenanceIndex from './views/Maintenances/Index';
+
 import DeviceLinks from './Routes/Devices';
 import GeofenceLinks from './Routes/Geofences';
-import DriverLinks from './Routes/Drivers';
 import GroupLinks from './Routes/Groups';
-import MaintenceLinks from './Routes/Maintenances';
+import DriverLinks from './Routes/Drivers';
+import MaintenanceLinks from './Routes/Maintenances';
 
 var routes = [
   {
@@ -15,33 +22,43 @@ var routes = [
   },
   {
     name: "Devices",
-    icon: "tim-icons icon-bus-front-12",
-    layout: "/admin",
-    children: DeviceLinks
-  },
-  {
-    name: "Geofences",
     icon: "tim-icons icon-app",
     layout: "/admin",
-    children: GeofenceLinks
+    path: '/devices',
+    component: DeviceIndex,
+    children: DeviceLinks
   },
   {
     name: "Drivers",
     icon: "tim-icons icon-delivery-fast",
     layout: "/admin",
+    path: '/drivers',
+    component: DriverIndex,
     children: DriverLinks
+  },
+  {
+    name: "Geofences",
+    icon: "tim-icons icon-bus-front-12",
+    layout: "/admin",
+    path: '/geofences',
+    component: GeofenceIndex,
+    children: GeofenceLinks
   },
   {
     name: "Groups",
     icon: "tim-icons icon-paper",
     layout: "/admin",
+    path: '/groups',
+    component: GroupIndex,
     children: GroupLinks
   },
   {
-    name: "Maintenance",
+    name: "Maintenances",
     icon: "tim-icons icon-settings-gear-63",
     layout: "/admin",
-    children: MaintenceLinks
+    path: '/maintenances',
+    component: MaintenanceIndex,
+    children: MaintenanceLinks
   }
 ];
 
