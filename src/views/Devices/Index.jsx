@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 
 // reactstrap components
 import {
@@ -42,6 +43,7 @@ class Index extends React.Component {
                           <th>Disabled</th>
                           <th>Model</th>
                           <th>Category</th>
+                          <th>Actions</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -52,9 +54,21 @@ class Index extends React.Component {
                                 <td>{device.uniqueId}</td>
                                 <td>{device.name}</td>
                                 <td>{device.status}</td>
-                                <td>{device.disabled ? 'Yes' : 'No'}</td>
+                                <td>{device.disabled ? "Yes" : "No"}</td>
                                 <td>{device.model}</td>
                                 <td>{device.category}</td>
+                                <td>
+                                  <Link
+                                    to={`/admin/device/addToGroup/${device.id}`}
+                                  >
+                                    + Group
+                                  </Link><br />
+                                  <Link
+                                    to={`/admin/device/addToGeofence/${device.id}`}
+                                  >
+                                    + Geofence
+                                  </Link>
+                                </td>
                               </tr>
                             );
                           })}

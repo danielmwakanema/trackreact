@@ -51,7 +51,6 @@ class Add extends React.Component {
 
   componentWillUnmount() {
     this.unwatchLocation();
-    this.setState({});
   }
 
   watchLocation() {

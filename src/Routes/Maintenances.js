@@ -1,5 +1,6 @@
 import Add from '../views/Maintenances/Add';
 import Index from '../views/Maintenances/Index';
+import View from '../views/Maintenances/View';
 
 export default [
   {
@@ -7,6 +8,13 @@ export default [
     name: "Add Maintenance",
     icon: "tim-icons icon-simple-add",
     component: Add,
+    layout: "/admin"
+  },
+  {
+    path: "/maintenance/view/:id",
+    name: "View Maintenance",
+    icon: "tim-icons icon-simple-add",
+    component: View,
     layout: "/admin"
   },
   {

@@ -11,7 +11,7 @@ import PerfectScrollbar from "perfect-scrollbar";
 // reactstrap components
 import { Nav } from "reactstrap";
 
-import './Sidebar.css';
+import "./Sidebar.css";
 
 var ps;
 
@@ -103,65 +103,25 @@ class Sidebar extends React.Component {
           <Nav>
             {routes.map((prop, key) => {
               if (prop.redirect) return null;
-              if (prop.children) {
-                return (
-                  <div key={key}>
-                    <li
-                      className={"nav-link"}
-                      data-toggle={"collapse"}
-                      data-target={`#collapsible${key}`}
-                      aria-expanded={"false"}
-                      aria-controls={"collapsible"}
-                    >
-                      <i className={prop.icon} />
-                      <p>{prop.name}</p>
-                    </li>
-                    <div className={"collapse"} id={`collapsible${key}`}>
-                      <div>
-                        { prop.children.map((child, index) => (
-                          <li
-                            className={
-                              this.activeRoute(child.path) +
-                              (child.pro ? " active-pro" : "")
-                            }
-                            key={index}
-                          >
-                            <NavLink
-                              to={child.layout + child.path}
-                              className="nav-link"
-                              activeClassName="active"
-                              onClick={this.props.toggleSidebar}
-                            >
-                              <i className={child.icon} />
-                              <p>{ child.name } </p>
-                            </NavLink>
-                          </li>
-                        )) }
-                      </div>
-                    </div>
-                  </div>
-                );
-              } else {
-                return (
-                  <li
-                    className={
-                      this.activeRoute(prop.path) +
-                      (prop.pro ? " active-pro" : "")
-                    }
-                    key={key}
+              return (
+                <li
+                  className={
+                    this.activeRoute(prop.path) +
+                    (prop.pro ? " active-pro" : "")
+                  }
+                  key={key}
+                >
+                  <NavLink
+                    to={prop.layout + prop.path}
+                    className="nav-link"
+                    activeClassName="active"
+                    onClick={this.props.toggleSidebar}
                   >
-                    <NavLink
-                      to={prop.layout + prop.path}
-                      className="nav-link"
-                      activeClassName="active"
-                      onClick={this.props.toggleSidebar}
-                    >
-                      <i className={prop.icon} />
-                      <p>{rtlActive ? prop.rtlName : prop.name}</p>
-                    </NavLink>
-                  </li>
-                );
-              }
+                    <i className={prop.icon} />
+                    <p>{rtlActive ? prop.rtlName : prop.name}</p>
+                  </NavLink>
+                </li>
+              );
             })}
           </Nav>
         </div>

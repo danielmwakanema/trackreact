@@ -13,8 +13,7 @@ import {
 } from "reactstrap";
 
 import {
-  userDrivers,
-  resetUserDriversList
+  userDrivers
 } from "../../Redux/actions/driverActions";
 
 import "./Index.css";
@@ -22,10 +21,6 @@ import "./Index.css";
 class Index extends React.Component {
   componentDidMount() {
     this.props.userDrivers();
-  }
-
-  componentWillUnmount() {
-    this.props.resetUserDriversList();
   }
 
   render() {
@@ -88,8 +83,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    userDrivers: () => dispatch(userDrivers()),
-    resetUserDriversList: () => dispatch(resetUserDriversList())
+    userDrivers: () => dispatch(userDrivers())
   };
 };
 

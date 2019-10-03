@@ -1,5 +1,6 @@
 import Add from '../views/Geofences/Add';
 import Index from '../views/Geofences/Index';
+import View from '../views/Geofences/View';
 
 export default [
   {
@@ -7,6 +8,13 @@ export default [
     name: "Add Geofence",
     icon: "tim-icons icon-simple-add",
     component: Add,
+    layout: "/admin"
+  },
+  {
+    path: "/geofence/view/:id",
+    name: "View Geofence",
+    icon: "tim-icons icon-simple-add",
+    component: View,
     layout: "/admin"
   },
   {
