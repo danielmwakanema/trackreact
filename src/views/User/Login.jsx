@@ -27,10 +27,6 @@ class Login extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  componentWillUnmount() {
-    this.setState({});
-  }
-
   componentDidUpdate (previousProps) {
     if (this.props.userIsAvailable !== previousProps.userIsAvailable) {
       this.props.history.push("/admin/dashboard")
