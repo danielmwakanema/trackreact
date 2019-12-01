@@ -31,6 +31,7 @@ class Index extends React.Component {
               <Card className="card-plain">
                 <CardHeader>
                   <CardTitle tag="h4">Device List</CardTitle>
+                  <Link to={`/admin/device/add`}>+ Device</Link>
                 </CardHeader>
                 <CardBody>
                   {this.props.devices.length > 0 && (
