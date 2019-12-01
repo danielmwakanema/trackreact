@@ -1,5 +1,7 @@
 import Dashboard from "views/User/Dashboard.jsx";
 
+import ReportIndex from './views/Reports/Index';
+import GroupReportIndex from './views/Reports/GroupReport';
 import DeviceIndex from './views/Devices/Index';
 import GeofenceIndex from './views/Geofences/Index';
 import GroupIndex from './views/Groups/Index';
@@ -59,6 +61,20 @@ var routes = [
     path: '/maintenances',
     component: MaintenanceIndex,
     children: MaintenanceLinks
+  },
+  {
+    name: "Device Reports",
+    icon: "tim-icons icon-book-bookmark",
+    layout: "/admin",
+    path: '/reports/device',
+    component: ReportIndex
+  },
+  {
+    name: "Group Reports",
+    icon: "tim-icons icon-book-bookmark",
+    layout: "/admin",
+    path: '/reports/group',
+    component: GroupReportIndex
   }
 ];
 
