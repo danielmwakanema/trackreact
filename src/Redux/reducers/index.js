@@ -7,6 +7,7 @@ import geofencesReducer from "./geofencesReducer";
 import groupsReducer from "./groupsReducer";
 import maintenancesReducer from "./maintenancesReducer";
 import notificationsReducer from "./notificationsReducer";
+import reportsReducer from "./reportsReducer";
 
 export default combineReducers({
   User: usersReducer,
@@ -15,5 +16,6 @@ export default combineReducers({
   Geofence: geofencesReducer,
   Group: groupsReducer,
   Maintenance: maintenancesReducer,
-  Notification: notificationsReducer
+  Notification: notificationsReducer,
+  Report: reportsReducer
 });
