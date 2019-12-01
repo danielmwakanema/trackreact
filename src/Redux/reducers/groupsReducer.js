@@ -18,7 +18,7 @@ export default (state = init, action) => {
     case ADD_GROUP_FAILED:
       return Object.assign({}, state);
     case GET_USER_GROUPS_SUCCESS:
-      return Object.assign({}, state, action.payload);
+      return Object.assign({}, state, { groups: action.payload });
     case GET_USER_GROUPS_FAILED:
       return Object.assign({}, state);
     case RESET_USER_GROUPS_LIST:
