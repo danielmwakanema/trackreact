@@ -7,7 +7,7 @@ import Config from '../config/traccar.json';
  * @return {Object}
  */
 export default (credentials = null) => {
-  const requestParams = { baseURL: `${Config.protocol}://${Config.host}:${Config.port}/api` }
-  if (credentials) requestParams.headers = { Authorization: `Basic ${btoa(`${credentials.email}:${credentials.password}`)}`} 
+  const requestParams = { baseURL: `${Config.protocol}://${Config.host}:${Config.port}/api`, maxRedirects: 0, withCredentials: true }
+  if (credentials) requestParams.headers = { Authorization: `Basic ${btoa(`${credentials.email}:${credentials.password}`)}` } 
   return Axios.create(requestParams)
 }

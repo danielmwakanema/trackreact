@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 
 // reactstrap components
 import {
@@ -30,6 +31,7 @@ class Index extends React.Component {
               <Card className="card-plain">
                 <CardHeader>
                   <CardTitle tag="h4">Maintenance List</CardTitle>
+                  <Link to={`/admin/maintenance/add`}>+ Maintenance</Link>
                 </CardHeader>
                 <CardBody>
                   {this.props.maintenances.length > 0 && (

@@ -2,10 +2,7 @@ import TraccarAPI from "../../lib/TraccarAPI";
 import { LOGIN_FAILED, LOGIN_SUCCESS } from "./actionTypes";
 
 const loginFailed = () => {
-  return {
-    type: LOGIN_FAILED,
-    errorMessage: "There was a problem logging you in."
-  };
+  return { type: LOGIN_FAILED };
 };
 
 const loginSuccess = payload => {
@@ -24,10 +21,15 @@ export const login = payload => {
     client
       .post("/session", params)
       .then(res => {
-        dispatch(loginSuccess({ email: payload.email, password: payload.password, id: res.data.id }));
+        dispatch(
+          loginSuccess({
+            email: payload.email,
+            password: payload.password,
+            id: res.data.id
+          })
+        );
       })
-      .catch(error => {
-        console.error(error);
+      .catch(() => {
         dispatch(loginFailed());
       });
   };

@@ -19,7 +19,7 @@ const addGroupSuccess = () => {
 };
 
 const getUserGroupsSuccess = payload => {
-  return { type: GET_USER_GROUPS_SUCCESS, payload: { groups: payload } };
+  return { type: GET_USER_GROUPS_SUCCESS, payload };
 };
 
 const getUserGroupsFailed = () => {
