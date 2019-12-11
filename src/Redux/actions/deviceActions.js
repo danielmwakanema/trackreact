@@ -11,6 +11,8 @@ import {
   UPDATE_DEVICE_FAILED
 } from "./actionTypes";
 
+import { showNotification } from "./notificationActions";
+
 
 const addDeviceSuccess = () => {
   return { type: ADD_DEVICE_SUCCESS };
@@ -54,6 +56,7 @@ export const addDevice = payload => {
     client
       .post("/devices", payload)
       .then(res => {
+        dispatch(showNotification({ title: "Information", message: "Device added." }));
         dispatch(addDeviceSuccess());
       })
       .catch(error => {
