@@ -10,7 +10,7 @@ const init = {
 export default (state = init, action) => {
   switch (action.type) {
     case SHOW_NOTIFICATION:
-      return Object.assign({}, state, action.payload);
+      return Object.assign({}, state, { show: true, ...action.payload });
     case HIDE_NOTIFICATION:
       return Object.assign({}, state, { show: false });
     default:
