@@ -12,6 +12,7 @@ import PerfectScrollbar from "perfect-scrollbar";
 import { Nav } from "reactstrap";
 
 import "./Sidebar.css";
+import moment from "moment";
 
 var ps;
 
@@ -19,6 +20,9 @@ class Sidebar extends React.Component {
   constructor(props) {
     super(props);
     this.activeRoute.bind(this);
+    this.state = {
+      time: moment().format('YYYY:MM:DD H:m:s')
+    }
   }
   // verifies if routeName is the one active (in browser input)
   activeRoute(routeName) {
@@ -31,6 +35,8 @@ class Sidebar extends React.Component {
         suppressScrollY: false
       });
     }
+
+    setInterval(() => this.setState({ time: moment().format('YYYY:MM:DD H:m:s') }), 1000)
   }
   componentWillUnmount() {
     if (navigator.platform.indexOf("Win") > -1) {
@@ -98,6 +104,7 @@ class Sidebar extends React.Component {
             <div className="logo">
               {logoImg}
               {logoText}
+              <small style={{ color: 'white' }}>{ this.state.time }</small>
             </div>
           ) : null}
           <Nav>
