@@ -1,28 +1,30 @@
-import React from 'react';
+import React from "react";
 
-import {
-  Modal,
-  ModalHeader,
-  ModalBody
-} from "reactstrap";
+import { Modal, ModalBody } from "reactstrap";
 
 class InfoModal extends React.Component {
-  render () {
+  render() {
     return (
-      <Modal
-        isOpen={true}
-        size="sm"
-        style={{ backgroundColor: "crimson" }}
-        toggle={this.props.toggle}
-      >
-      <ModalHeader
-        className="justify-content-center"
-        toggle={this.props.toggle}
-      >
-        { this.props.header }
-      </ModalHeader>
-      <ModalBody>{ this.props.message }</ModalBody>
-    </Modal>
+      <Modal isOpen={this.props.isOpen} toggle={this.props.toggle}>
+        <div className="modal-header">
+          <h5 className="modal-title" id="modalLabel">
+            {this.props.header}
+          </h5>
+          <a
+            href="/"
+            className="close"
+            data-dismiss="modal"
+            aria-hidden="true"
+            onClick={ e => { e.preventDefault(); this.props.toggle(); }}
+            style={{padding: "1%"}}
+          >
+            <i className="tim-icons icon-simple-remove" />
+          </a>
+        </div>
+        <ModalBody>
+          <p>{ this.props.message }</p>
+        </ModalBody>
+      </Modal>
     );
   }
 }

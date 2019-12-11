@@ -1,31 +1,43 @@
 import TraccarAPI from "../../lib/TraccarAPI";
 
 import {
-  FETCH_DEVICE_REPORT_SUCCESS,
-  FETCH_DEVICE_REPORT_FAILED,
-  FETCH_GROUP_REPORT_SUCCESS,
-  FETCH_GROUP_REPORT_FAILED
+  FETCH_SUMMARY_REPORT_SUCCESS,
+  FETCH_TRIP_REPORT_SUCCESS,
+  FETCH_STOP_REPORT_SUCCESS,
+  FETCH_REPORT_FAILED,
+  RESET_REPORTS
 } from "./actionTypes";
 
-const fetchDeviceReportSuccess = payload => {
-  return { type: FETCH_DEVICE_REPORT_SUCCESS, payload };
+const fetchTripReportSuccess = payload => {
+  return { type: FETCH_TRIP_REPORT_SUCCESS, payload }
+}
+
+const fetchSummaryReportSuccess = payload => {
+  return { type: FETCH_SUMMARY_REPORT_SUCCESS, payload };
 };
 
-const fetchDeviceReportFailed = () => {
-  return { type: FETCH_DEVICE_REPORT_FAILED };
+const fetchStopReportSuccess = payload => {
+  return { type: FETCH_STOP_REPORT_SUCCESS, payload };
 };
 
-const fetchGroupReportSuccess = payload => {
-  return { type: FETCH_GROUP_REPORT_SUCCESS, payload };
+const fetchReportFailed = () => {
+  return { type: FETCH_REPORT_FAILED };
 };
 
-const fetchGroupReportFailed = () => {
-  return { type: FETCH_GROUP_REPORT_FAILED };
+const resetReportsCreator = () => {
+  return { type: RESET_REPORTS };
 };
 
-export const deviceReports = (deviceIds = [], type = "", startDate, endDate) => {
-  const requestString = deviceIds.reduce(
-    (acc, val, index) => index === 0 ? `deviceId=${val}` : `${acc}&deviceId=${val}`,
+const ACTION_REDUCER_MAP = {
+  'trips': fetchTripReportSuccess,
+  'summary': fetchSummaryReportSuccess,
+  'stops': fetchStopReportSuccess
+}
+
+export const fetchReport = (ids = [], type = "", startDate, endDate, isGroup = false) => {
+  const key = isGroup ? 'groupId' : 'deviceId';
+  const requestString = ids.reduce(
+    (acc, val, index) => index === 0 ? `${key}=${val}` : `${acc}&${key}=${val}`,
     ""
   );
   return (dispatch, getState) => {
@@ -35,24 +47,13 @@ export const deviceReports = (deviceIds = [], type = "", startDate, endDate) => 
     });
     client
       .get(`/reports/${type}?${requestString}&from=${startDate}&to=${endDate}`)
-      .then(res => dispatch(fetchDeviceReportSuccess(res.data)))
-      .catch(error => {dispatch(fetchDeviceReportFailed())});
+      .then(res => {
+        dispatch(ACTION_REDUCER_MAP[type](res.data));
+      })
+      .catch(() => {dispatch(fetchReportFailed())});
   };
 };
 
-export const groupReports = (groupIds = [], type = "", startDate, endDate) => {
-  const requestString = groupIds.reduce(
-    (acc, val, index) => (index === 0 ? `groupId=${val}` : `${acc}&groupId=${val}`),
-    ""
-  );
-  return (dispatch, getState) => {
-    const client = TraccarAPI({
-      email: getState().User.email,
-      password: getState().User.password
-    });
-    client
-      .get(`/reports/${type}?${requestString}&from=${startDate}&to=${endDate}`)
-      .then(res => dispatch(fetchGroupReportSuccess(res.data)))
-      .catch(error => dispatch(fetchGroupReportFailed()));
-  };
-};
+export const resetReports = () => {
+  return dispatch => dispatch(resetReportsCreator())
+}

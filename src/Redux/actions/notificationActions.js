@@ -1,9 +1,9 @@
 import { SHOW_NOTIFICATION, HIDE_NOTIFICATION } from "./actionTypes";
 
 export const showNotification = payload => {
-  return { type: SHOW_NOTIFICATION, notification: payload };
+  return { type: SHOW_NOTIFICATION, payload };
 };
 
-export const hideNofitication = () => {
+export const hideNotification = () => {
   return { type: HIDE_NOTIFICATION };
 };

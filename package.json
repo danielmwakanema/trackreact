@@ -12,6 +12,7 @@
     "classnames": "*",
     "history": "*",
     "jquery": "^3.4.1",
+    "moment": "^2.24.0",
     "node-sass": "*",
     "perfect-scrollbar": "*",
     "prop-types": "*",

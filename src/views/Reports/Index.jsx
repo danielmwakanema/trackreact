@@ -2,11 +2,11 @@ import React from "react";
 import { connect } from "react-redux";
 // react plugin used to create charts
 import { Line } from "react-chartjs-2";
-import { deviceReports } from "../../Redux/actions/reportActions";
+import { fetchReport, resetReports } from "../../Redux/actions/reportActions";
 import Utils from "../../utils";
 
 // reactstrap components
-import { Card, CardHeader, CardBody, CardTitle, Row, Col, FormGroup, Input, Form } from "reactstrap";
+import { Card, CardHeader, CardBody, CardTitle, Row, Col, FormGroup, Input, Form, Table } from "reactstrap";
 
 // core components
 import {
@@ -16,12 +16,16 @@ import {
 } from "variables/charts.jsx";
 
 class Dashboard extends React.Component {
+  componentWillUnmount = () => {
+    this.props.resetReports();
+  }
+
   handleSubmit = evt => {
     evt.preventDefault()
     const fieldValues = this.params()
     if (this.paramsAreValid(fieldValues)) {
       const [id, reportType, startDate, endDate] = fieldValues
-      this.props.deviceReports([id], reportType, this.toIso(startDate), this.toIso(endDate))
+      this.props.fetchReport([id], reportType, this.toIso(startDate), this.toIso(endDate))
     } else alert('Invalid params...')
   }
 
@@ -64,7 +68,8 @@ class Dashboard extends React.Component {
                             onChange={this.handleInputChange}
                           >
                             <option value="trips">Trips</option>
-                            <option value="trips">Summary</option>
+                            <option value="summary">Summary</option>
+                            <option value="stops">Stops</option>
                           </select>
                         </FormGroup>
                       </Col>
@@ -106,14 +111,14 @@ class Dashboard extends React.Component {
               </Card>
             </Col>
           </Row>
-          {this.props.parsedReport && <div>
+          {this.props.tripReport && <div>
             <Row>
               <Col lg="2">
                 <Card className="card-chart">
                   <CardHeader>
                     <h5 className="card-category">Total # of Trips</h5>
                     <CardTitle tag="h3">
-                      <i className="tim-icons icon-cart text-info" /> {this.props.parsedReport.trips}
+                      <i className="tim-icons icon-cart text-info" /> {this.props.tripReport.trips}
                     </CardTitle>
                   </CardHeader>
                 </Card>
@@ -123,7 +128,7 @@ class Dashboard extends React.Component {
                   <CardHeader>
                     <h5 className="card-category">Average Speed</h5>
                     <CardTitle tag="h3">
-                      <i className="tim-icons icon-delivery-fast text-info" /> {this.props.parsedReport.speedAverage}
+                      <i className="tim-icons icon-delivery-fast text-info" /> {this.props.tripReport.speedAverage}
                     </CardTitle>
                   </CardHeader>
                 </Card>
@@ -133,7 +138,7 @@ class Dashboard extends React.Component {
                   <CardHeader>
                     <h5 className="card-category">Average Fuel Used</h5>
                     <CardTitle tag="h3">
-                      <i className="tim-icons icon-money-coins text-info" /> {this.props.parsedReport.fuelAverage} L
+                      <i className="tim-icons icon-money-coins text-info" /> {this.props.tripReport.fuelAverage} L
                   </CardTitle>
                   </CardHeader>
                 </Card>
@@ -143,7 +148,7 @@ class Dashboard extends React.Component {
                   <CardHeader>
                     <h5 className="card-category">Total Distance Covered</h5>
                     <CardTitle tag="h3">
-                      <i className="tim-icons icon-compass-05 text-info" /> {this.props.parsedReport.distanceTotal}
+                      <i className="tim-icons icon-compass-05 text-info" /> {this.props.tripReport.distanceTotal}
                     </CardTitle>
                   </CardHeader>
                 </Card>
@@ -153,7 +158,7 @@ class Dashboard extends React.Component {
                   <CardHeader>
                     <h5 className="card-category">Average Trip Duration</h5>
                     <CardTitle tag="h3">
-                      <i className="tim-icons icon-globe-2 text-info" /> {this.props.parsedReport.durationAverage}
+                      <i className="tim-icons icon-globe-2 text-info" /> {this.props.tripReport.durationAverage}
                     </CardTitle>
                   </CardHeader>
                 </Card>
@@ -163,7 +168,7 @@ class Dashboard extends React.Component {
                   <CardHeader>
                     <h5 className="card-category">Average Maximum Speed</h5>
                     <CardTitle tag="h3">
-                      <i className="tim-icons icon-chart-bar-32 text-info" /> {this.props.parsedReport.maxSpeedAverage}
+                      <i className="tim-icons icon-chart-bar-32 text-info" /> {this.props.tripReport.maxSpeedAverage}
                     </CardTitle>
                   </CardHeader>
                 </Card>
@@ -175,13 +180,13 @@ class Dashboard extends React.Component {
                   <CardHeader>
                     <h5 className="card-category">Speed Trends</h5>
                     <CardTitle tag="h3">
-                      <i className="tim-icons icon-bell-55 text-info" /> {this.props.parsedReport.maxSpeedAverage}
+                      <i className="tim-icons icon-bell-55 text-info" /> {this.props.tripReport.maxSpeedAverage}
                     </CardTitle>
                   </CardHeader>
                   <CardBody>
                     <div className="chart-area">
                       <Line
-                        data={{ labels: this.props.parsedReport.speedTrends.map((_, index) => index), datasets: [{ backgroundColor: "#d346b1", label: "Trips", data: this.props.parsedReport.speedTrends.map(val => val) }] }}
+                        data={{ labels: this.props.tripReport.speedTrends.map((_, index) => index), datasets: [{ backgroundColor: "#d346b1", label: "Trips", data: this.props.tripReport.speedTrends.map(val => val) }] }}
                         options={chartExample2.options}
                       />
                     </div>
@@ -194,13 +199,13 @@ class Dashboard extends React.Component {
                     <h5 className="card-category">Distance Trends</h5>
                     <CardTitle tag="h3">
                       <i className="tim-icons icon-delivery-fast text-primary" />{" "}
-                      {this.props.parsedReport.distanceTotal}
+                      {this.props.tripReport.distanceTotal}
                     </CardTitle>
                   </CardHeader>
                   <CardBody>
                     <div className="chart-area">
                       <Line
-                        data={{ labels: this.props.parsedReport.distanceTrends.map((_, index) => index), datasets: [{ backgroundColor: "#1f8ef1", label: "Distance", data: this.props.parsedReport.distanceTrends.map(val => val) }] }}
+                        data={{ labels: this.props.tripReport.distanceTrends.map((_, index) => index), datasets: [{ backgroundColor: "#1f8ef1", label: "Distance", data: this.props.tripReport.distanceTrends.map(val => val) }] }}
                         options={chartExample3.options}
                       />
                     </div>
@@ -212,13 +217,13 @@ class Dashboard extends React.Component {
                   <CardHeader>
                     <h5 className="card-category">Fuel Trends</h5>
                     <CardTitle tag="h3">
-                      <i className="tim-icons icon-send text-success" /> {this.props.parsedReport.fuelAverage}
+                      <i className="tim-icons icon-send text-success" /> {this.props.tripReport.fuelAverage}
                     </CardTitle>
                   </CardHeader>
                   <CardBody>
                     <div className="chart-area">
                       <Line
-                        data={{ labels: this.props.parsedReport.fuelTrends.map((_, index) => index), datasets: [{ backgroundColor: "aliceblue", label: "Fuel", data: this.props.parsedReport.fuelTrends.map(val => val) }] }}
+                        data={{ labels: this.props.tripReport.fuelTrends.map((_, index) => index), datasets: [{ backgroundColor: "aliceblue", label: "Fuel", data: this.props.tripReport.fuelTrends.map(val => val) }] }}
                         options={chartExample4.options}
                       />
                     </div>
@@ -226,6 +231,92 @@ class Dashboard extends React.Component {
                 </Card>
               </Col>
             </Row></div>}
+          {
+            this.props.summaryReport && <div>
+              <Row>
+                <Col lg="12">
+                  <Card className="card-chart">
+                    <CardHeader>
+                      <h5 className="card-category">Summary Report</h5>
+                    </CardHeader>
+                    <CardBody>
+                      <div className="summary-table">
+                        <Table responsive>
+                          <thead>
+                            <tr>
+                              <th>Name</th>
+                              <th>Max Speed</th>
+                              <th>Average Speed</th>
+                              <th>Distance</th>
+                              <th>Fuel</th>
+                              <th>Engine Hours</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {this.props.summaryReport.map((summary, index) => (
+                              <tr key={index}>
+                                <td>{summary.name}</td>
+                                <td>{summary.maxSpeed}</td>
+                                <td>{summary.averageSpeed}</td>
+                                <td>{summary.distance}</td>
+                                <td>{summary.fuel}</td>
+                                <td>{summary.engineHours}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </Table>
+                      </div>
+                    </CardBody>
+                  </Card>
+                </Col>
+              </Row>
+            </div>
+          }
+          {
+            this.props.stopReport && <div>
+              <Row>
+                <Col lg="12">
+                  <Card className="card-chart">
+                    <CardHeader>
+                      <h5 className="card-category">Stop Report</h5>
+                    </CardHeader>
+                    <CardBody>
+                      <div className="summary-table">
+                        <Table responsive>
+                          <thead>
+                            <tr>
+                              <th>Name</th>
+                              <th>Duration</th>
+                              <th>Start Time</th>
+                              <th>End Time</th>
+                              <th>Latitude</th>
+                              <th>Longitude</th>
+                              <th>Fuel Spent</th>
+                              <th>Engine Hours</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {this.props.stopReport.map((stop, index) => (
+                              <tr key={index}>
+                                <td>{stop.name}</td>
+                                <td>{stop.duration}</td>
+                                <td>{stop.start}</td>
+                                <td>{stop.end}</td>
+                                <td>{stop.lat}</td>
+                                <td>{stop.lon}</td>
+                                <td>{stop.fuel}</td>
+                                <td>{stop.engineHours}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </Table>
+                      </div>
+                    </CardBody>
+                  </Card>
+                </Col>
+              </Row>
+            </div>
+          }
         </div>
       </>
     );
@@ -234,14 +325,17 @@ class Dashboard extends React.Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    deviceReports: (ids = [], type, startDate, endDate) => dispatch(deviceReports(ids, type, startDate, endDate))
+    fetchReport: (ids = [], type, startDate, endDate) => dispatch(fetchReport(ids, type, startDate, endDate)),
+    resetReports: () => dispatch(resetReports())
   };
 };
 
 const mapStateToProps = state => {
   return {
-    deviceReport: state.Report.deviceReport,
-    parsedReport: state.Report.parsedReport,
+    report: state.Report.report,
+    tripReport: state.Report.tripReport,
+    summaryReport: state.Report.summaryReport,
+    stopReport: state.Report.stopReport,
     devices: state.Device.devices
   };
 };

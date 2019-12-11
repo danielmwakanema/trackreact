@@ -1,4 +1,4 @@
-const DeviceReportMarshall = (report) => {
+const TripReportMarshall = (report) => {
   const data = report
 
   const generateMarshall = () => {
@@ -30,4 +30,4 @@ const DeviceReportMarshall = (report) => {
   }
 }
 
-export default DeviceReportMarshall;
+export default TripReportMarshall;
