@@ -2,11 +2,15 @@ import React from "react";
 import { Route, Switch } from "react-router-dom";
 // javascript plugin used to create scrollbars on windows
 import PerfectScrollbar from "perfect-scrollbar";
+import { connect } from "react-redux";
 
 // core components
 import AdminNavbar from "components/Navbars/AdminNavbar.jsx";
 import Footer from "components/Footer/Footer.jsx";
 import Sidebar from "components/Sidebar/Sidebar.jsx";
+
+import { hideNotification } from "../../Redux/actions/notificationActions";
+import NotificationsModal from "../../components/Modals/InfoModal";
 
 import routes from "routes.js";
 
@@ -130,10 +134,33 @@ class Admin extends React.Component {
               <Footer fluid />
             )}
           </div>
+          {this.props.notification.show && (
+            <NotificationsModal
+              header={this.props.notification.title}
+              message={this.props.notification.message}
+              toggle={this.props.hideNotification}
+              isOpen={this.props.notification.show}
+            />
+          )}
         </div>
       </>
     );
   }
 }
 
-export default Admin;
+const mapStateToProps = state => {
+  return {
+    notification: state.Notification
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    hideNotification: () => dispatch(hideNotification())
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Admin);
