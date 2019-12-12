@@ -4,6 +4,7 @@ import {
   FETCH_SUMMARY_REPORT_SUCCESS,
   FETCH_TRIP_REPORT_SUCCESS,
   FETCH_STOP_REPORT_SUCCESS,
+  FETCH_EVENT_REPORT_SUCCESS,
   FETCH_REPORT_FAILED,
   RESET_REPORTS
 } from "./actionTypes";
@@ -20,6 +21,10 @@ const fetchStopReportSuccess = payload => {
   return { type: FETCH_STOP_REPORT_SUCCESS, payload };
 };
 
+const fetchEventReportSuccess = (report, devices) => {
+  return { type: FETCH_EVENT_REPORT_SUCCESS, payload: { report, devices } };
+};
+
 const fetchReportFailed = () => {
   return { type: FETCH_REPORT_FAILED };
 };
@@ -31,7 +36,8 @@ const resetReportsCreator = () => {
 const ACTION_REDUCER_MAP = {
   'trips': fetchTripReportSuccess,
   'summary': fetchSummaryReportSuccess,
-  'stops': fetchStopReportSuccess
+  'stops': fetchStopReportSuccess,
+  'events': fetchEventReportSuccess
 }
 
 export const fetchReport = (ids = [], type = "", startDate, endDate, isGroup = false) => {
@@ -48,9 +54,10 @@ export const fetchReport = (ids = [], type = "", startDate, endDate, isGroup = f
     client
       .get(`/reports/${type}?${requestString}&from=${startDate}&to=${endDate}`)
       .then(res => {
-        dispatch(ACTION_REDUCER_MAP[type](res.data));
+        const devices = getState().Device.devices
+        dispatch(ACTION_REDUCER_MAP[type](res.data, devices));
       })
-      .catch(() => {dispatch(fetchReportFailed())});
+      .catch(() => { dispatch(fetchReportFailed()); });
   };
 };
 
