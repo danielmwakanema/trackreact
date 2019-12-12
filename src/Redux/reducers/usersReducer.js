@@ -1,4 +1,4 @@
-import { LOGIN_SUCCESS } from '../actions/actionTypes';
+import { LOGIN_SUCCESS } from "../actions/actionTypes";
 
 const init = {
   id: null,
