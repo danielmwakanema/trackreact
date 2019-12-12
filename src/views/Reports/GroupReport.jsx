@@ -75,6 +75,7 @@ class Dashboard extends React.Component {
                             <option value="trips">Trips</option>
                             <option value="summary">Summary</option>
                             <option value="stops">Stops</option>
+                            <option value="events">Events</option>
                           </select>
                         </FormGroup>
                       </Col>
@@ -321,6 +322,41 @@ class Dashboard extends React.Component {
               </Row>
             </div>
           }
+          {
+            this.props.eventReport && <div>
+              <Row>
+                <Col lg="12">
+                  <Card className="card-chart">
+                    <CardHeader>
+                      <h5 className="card-category">Event Report</h5>
+                    </CardHeader>
+                    <CardBody>
+                      <div className="summary-table">
+                        <Table responsive>
+                          <thead>
+                            <tr>
+                              <th>Name</th>
+                              <th>Type</th>
+                              <th>Time</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {this.props.eventReport.map((event, index) => (
+                              <tr key={index}>
+                                <td>{event.name}</td>
+                                <td>{event.type}</td>
+                                <td>{event.at}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </Table>
+                      </div>
+                    </CardBody>
+                  </Card>
+                </Col>
+              </Row>
+            </div>
+          }
         </div>
       </>
     );
@@ -341,6 +377,7 @@ const mapStateToProps = state => {
     tripReport: state.Report.tripReport,
     summaryReport: state.Report.summaryReport,
     stopReport: state.Report.stopReport,
+    eventReport: state.Report.eventReport,
     groups: state.Group.groups
   };
 };
