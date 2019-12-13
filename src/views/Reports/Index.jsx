@@ -4,6 +4,8 @@ import { connect } from "react-redux";
 import { Line } from "react-chartjs-2";
 import { fetchReport, resetReports } from "../../Redux/actions/reportActions";
 import Utils from "../../utils";
+import ToCSV from "../../components/Utils/ToCSV";
+import moment from 'moment';
 
 // reactstrap components
 import { Card, CardHeader, CardBody, CardTitle, Row, Col, FormGroup, Input, Form, Table } from "reactstrap";
@@ -239,6 +241,7 @@ class Dashboard extends React.Component {
                   <Card className="card-chart">
                     <CardHeader>
                       <h5 className="card-category">Summary Report</h5>
+                      <ToCSV data={this.props.summaryReport} filename={`SummaryReport${moment().format('YYYY-MM-DD H:m:s')}.csv`}></ToCSV>
                     </CardHeader>
                     <CardBody>
                       <div className="summary-table">
@@ -280,6 +283,7 @@ class Dashboard extends React.Component {
                   <Card className="card-chart">
                     <CardHeader>
                       <h5 className="card-category">Stop Report</h5>
+                      <ToCSV data={this.props.stopReport} filename={`StopReport${moment().format('YYYY-MM-DD H:m:s')}.csv`}></ToCSV>
                     </CardHeader>
                     <CardBody>
                       <div className="summary-table">
@@ -325,6 +329,7 @@ class Dashboard extends React.Component {
                   <Card className="card-chart">
                     <CardHeader>
                       <h5 className="card-category">Event Report</h5>
+                      <ToCSV data={this.props.eventReport} filename={`EventReport${moment().format('YYYY-MM-DD H:m:s')}.csv`}></ToCSV>
                     </CardHeader>
                     <CardBody>
                       <div className="summary-table">
