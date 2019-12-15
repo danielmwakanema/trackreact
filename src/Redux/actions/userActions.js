@@ -1,15 +1,14 @@
 import TraccarAPI from "../../lib/TraccarAPI";
-import { LOGIN_FAILED, LOGIN_SUCCESS } from "./actionTypes";
+import { LOGIN_SUCCESS, RESET_CREDENTIALS } from "./actionTypes";
 
-const loginFailed = () => {
-  return { type: LOGIN_FAILED };
-};
+import { requestFailed } from "./genericActions";
 
 const loginSuccess = payload => {
-  return {
-    type: LOGIN_SUCCESS,
-    payload: payload
-  };
+  return { type: LOGIN_SUCCESS, payload };
+};
+
+export const resetCredentials = () => {
+  return { type: RESET_CREDENTIALS }
 };
 
 export const login = payload => {
@@ -20,17 +19,15 @@ export const login = payload => {
     );
     client
       .post("/session", params)
-      .then(res => {
+      .then(res =>
         dispatch(
           loginSuccess({
             email: payload.email,
             password: payload.password,
             id: res.data.id
           })
-        );
-      })
-      .catch(() => {
-        dispatch(loginFailed());
-      });
+        )
+      )
+      .catch(error => dispatch(requestFailed(error)));
   };
 };
