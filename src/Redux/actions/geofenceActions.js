@@ -1,67 +1,38 @@
 import TraccarAPI from "../../lib/TraccarAPI";
 import {
-  ADD_GEOFENCE_SUCCESS,
-  ADD_GEOFENCE_FAILED,
   GET_USER_GEOFENCES_SUCCESS,
-  GET_USER_GEOFENCES_FAILED,
   RESET_USER_GEOFENCES_LIST
 } from "./actionTypes";
 
-const addGeofenceFailed = () => {
-  return {
-    type: ADD_GEOFENCE_FAILED,
-    errorMessage: "There was an error adding the geofence."
-  };
-};
+import { requestSuccess, requestFailed } from "./genericActions";
 
-const addGeofenceSuccess = () => {
-  return { type: ADD_GEOFENCE_SUCCESS };
+const cred = state =>
+  Object.assign({}, { email: state.User.email, password: state.User.password });
+
+export const resetUserGeofencesList = () => {
+  return { type: RESET_USER_GEOFENCES_LIST };
 };
 
 const getUserGeofencesSuccess = payload => {
   return { type: GET_USER_GEOFENCES_SUCCESS, payload: { geofences: payload } };
 };
 
-const getUserGeofencesFailed = () => {
-  return { type: GET_USER_GEOFENCES_FAILED };
-};
-
 export const addGeofence = payload => {
   return (dispatch, getState) => {
-    const client = TraccarAPI({
-      email: getState().User.email,
-      password: getState().User.password
-    });
+    const client = TraccarAPI(cred(getState()));
     client
       .post("/geofences", payload)
-      .then(res => {
-        dispatch(addGeofenceSuccess());
-      })
-      .catch(error => {
-        console.error(error);
-        dispatch(addGeofenceFailed());
-      });
+      .then(() => dispatch(requestSuccess()))
+      .catch(error => dispatch(requestFailed(error)));
   };
 };
 
 export const userGeofences = () => {
   return (dispatch, getState) => {
-    const client = TraccarAPI({
-      email: getState().User.email,
-      password: getState().User.password
-    });
+    const client = TraccarAPI(cred(getState()));
     client
       .get(`/geofences?userId=${getState().User.id}`)
-      .then(res => {
-        dispatch(getUserGeofencesSuccess(res.data));
-      })
-      .catch(error => {
-        console.error(error);
-        dispatch(getUserGeofencesFailed());
-      });
+      .then(res => dispatch(getUserGeofencesSuccess(res.data)))
+      .catch(error => dispatch(requestFailed(error)));
   };
-};
-
-export const resetUserGeofencesList = () => {
-  return { type: RESET_USER_GEOFENCES_LIST };
 };

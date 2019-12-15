@@ -1,125 +1,58 @@
 import TraccarAPI from "../../lib/TraccarAPI";
 import {
-  ADD_DEVICE_SUCCESS,
-  ADD_DEVICE_FAILED,
-  GET_USER_DEVICES_SUCCESS,
-  GET_USER_DEVICES_FAILED,
   RESET_USER_DEVICES_LIST,
-  VIEW_DEVICE_SUCCESS,
-  VIEW_DEVICE_FAILED,
-  UPDATE_DEVICE_SUCCESS,
-  UPDATE_DEVICE_FAILED
+  GET_USER_DEVICES_SUCCESS
 } from "./actionTypes";
 
-import { showNotification } from "./notificationActions";
+import { requestFailed, requestSuccess } from "./genericActions";
 
-
-const addDeviceSuccess = () => {
-  return { type: ADD_DEVICE_SUCCESS };
-};
-
-const addDeviceFailed = () => {
-  return { type: ADD_DEVICE_FAILED };
-};
-
-const updateDeviceSuccess = () => {
-  return { type: UPDATE_DEVICE_SUCCESS };
-};
-
-const updateDeviceFailed = () => {
-  return { type: UPDATE_DEVICE_FAILED };
-};
-
-
-const viewDeviceSuccess = payload => {
-  return { type: VIEW_DEVICE_SUCCESS, payload: { device: payload } };
-};
-
-const viewDeviceFailed = () => {
-  return { type: VIEW_DEVICE_FAILED };
-}
+const cred = state =>
+  Object.assign({}, { email: state.User.email, password: state.User.password });
 
 const getUserDevicesSuccess = payload => {
   return { type: GET_USER_DEVICES_SUCCESS, payload: { devices: payload } };
 };
 
-const getUserDevicesFailed = () => {
-  return { type: GET_USER_DEVICES_FAILED };
+export const resetUserDevicesList = () => {
+  return { type: RESET_USER_DEVICES_LIST };
 };
 
 export const addDevice = payload => {
   return (dispatch, getState) => {
-    const client = TraccarAPI({
-      email: getState().User.email,
-      password: getState().User.password
-    });
+    const client = TraccarAPI(cred(getState()));
     client
       .post("/devices", payload)
-      .then(res => {
-        dispatch(showNotification({ title: "Information", message: "Device added." }));
-        dispatch(addDeviceSuccess());
-      })
-      .catch(error => {
-        console.error(error);
-        dispatch(addDeviceFailed());
-      });
+      .then(() => dispatch(requestSuccess()))
+      .catch(error => dispatch(requestFailed(error)));
   };
 };
 
 export const updateDevice = payload => {
   return (dispatch, getState) => {
-    const client = TraccarAPI({
-      email: getState().User.email,
-      password: getState().User.password
-    });
+    const client = TraccarAPI(cred(getState()));
     client
       .put(`/devices/${payload.id}`, payload)
-      .then(res => {
-        dispatch(updateDeviceSuccess());
-      })
-      .catch(error => {
-        console.error(error);
-        dispatch(updateDeviceFailed());
-      });
+      .then(() => dispatch(requestSuccess()))
+      .catch(error => dispatch(requestFailed(error)));
   };
 };
 
 export const viewDevice = deviceId => {
   return (dispatch, getState) => {
-    const client = TraccarAPI({
-      email: getState().User.email,
-      password: getState().User.password
-    });
+    const client = TraccarAPI(cred(getState()));
     client
       .get(`/devices/${deviceId}`)
-      .then(res => {
-        dispatch(viewDeviceSuccess());
-      })
-      .catch(error => {
-        console.error(error);
-        dispatch(viewDeviceFailed());
-      });
+      .then(() => {})
+      .catch(error => dispatch(requestFailed(error)));
   };
 };
 
 export const userDevices = () => {
   return (dispatch, getState) => {
-    const client = TraccarAPI({
-      email: getState().User.email,
-      password: getState().User.password
-    });
+    const client = TraccarAPI(cred(getState()));
     client
       .get(`/devices?userId=${getState().User.id}`)
-      .then(res => {
-        dispatch(getUserDevicesSuccess(res.data));
-      })
-      .catch(error => {
-        console.error(error);
-        dispatch(getUserDevicesFailed());
-      });
+      .then(res => dispatch(getUserDevicesSuccess(res.data)))
+      .catch(error => dispatch(requestFailed(error)));
   };
-};
-
-export const resetUserDevicesList = () => {
-  return { type: RESET_USER_DEVICES_LIST };
 };

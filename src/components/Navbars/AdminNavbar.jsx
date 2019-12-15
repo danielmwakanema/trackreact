@@ -1,22 +1,21 @@
 import React from "react";
+import { connect } from "react-redux"
 // nodejs library that concatenates classes
 import classNames from "classnames";
 
 // reactstrap components
 import {
   Collapse,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
-  UncontrolledDropdown,
   Input,
   NavbarBrand,
   Navbar,
-  NavLink,
   Nav,
   Container,
   Modal
 } from "reactstrap";
+
+import { resetCredentials } from "../../Redux/actions/userActions";
+import "./AdminNavbar.css";
 
 class AdminNavbar extends React.Component {
   constructor(props) {
@@ -27,12 +26,15 @@ class AdminNavbar extends React.Component {
       color: "navbar-transparent"
     };
   }
+
   componentDidMount() {
     window.addEventListener("resize", this.updateColor);
   }
+
   componentWillUnmount() {
     window.removeEventListener("resize", this.updateColor);
   }
+
   // function that adds color white/transparent to the navbar on resize (this is for the collapse)
   updateColor = () => {
     if (window.innerWidth < 993 && this.state.collapseOpen) {
@@ -45,6 +47,7 @@ class AdminNavbar extends React.Component {
       });
     }
   };
+
   // this function opens and closes the collapse on small devices
   toggleCollapse = () => {
     if (this.state.collapseOpen) {
@@ -60,12 +63,19 @@ class AdminNavbar extends React.Component {
       collapseOpen: !this.state.collapseOpen
     });
   };
+
   // this function is to open the Search modal
   toggleModalSearch = () => {
     this.setState({
       modalSearch: !this.state.modalSearch
     });
   };
+
+  leave = () => {
+    this.props.logout()
+    this.props.history.push("/")
+  }
+
   render() {
     return (
       <>
@@ -110,70 +120,7 @@ class AdminNavbar extends React.Component {
             </button>
             <Collapse navbar isOpen={this.state.collapseOpen}>
               <Nav className="ml-auto" navbar>
-                <UncontrolledDropdown nav>
-                  <DropdownToggle
-                    caret
-                    color="default"
-                    data-toggle="dropdown"
-                    nav
-                  >
-                    <div className="notification d-none d-lg-block d-xl-block" />
-                    <i className="tim-icons icon-sound-wave" />
-                    <p className="d-lg-none">Notifications</p>
-                  </DropdownToggle>
-                  <DropdownMenu className="dropdown-navbar" right tag="ul">
-                    <NavLink tag="li">
-                      <DropdownItem className="nav-item">
-                        Mike John responded to your email
-                      </DropdownItem>
-                    </NavLink>
-                    <NavLink tag="li">
-                      <DropdownItem className="nav-item">
-                        You have 5 more tasks
-                      </DropdownItem>
-                    </NavLink>
-                    <NavLink tag="li">
-                      <DropdownItem className="nav-item">
-                        Your friend Michael is in town
-                      </DropdownItem>
-                    </NavLink>
-                    <NavLink tag="li">
-                      <DropdownItem className="nav-item">
-                        Another notification
-                      </DropdownItem>
-                    </NavLink>
-                    <NavLink tag="li">
-                      <DropdownItem className="nav-item">
-                        Another one
-                      </DropdownItem>
-                    </NavLink>
-                  </DropdownMenu>
-                </UncontrolledDropdown>
-                <UncontrolledDropdown nav>
-                  <DropdownToggle
-                    caret
-                    color="default"
-                    data-toggle="dropdown"
-                    nav
-                    onClick={e => e.preventDefault()}
-                  >
-                    <b className="caret d-none d-lg-block d-xl-block" />
-                    <p className="d-lg-none">Log out</p>
-                  </DropdownToggle>
-                  <DropdownMenu className="dropdown-navbar" right tag="ul">
-                    <NavLink tag="li">
-                      <DropdownItem className="nav-item">Profile</DropdownItem>
-                    </NavLink>
-                    <NavLink tag="li">
-                      <DropdownItem className="nav-item">Settings</DropdownItem>
-                    </NavLink>
-                    <DropdownItem divider tag="li" />
-                    <NavLink tag="li">
-                      <DropdownItem className="nav-item">Log out</DropdownItem>
-                    </NavLink>
-                  </DropdownMenu>
-                </UncontrolledDropdown>
-                <li className="separator d-lg-none" />
+                <h5 id="logout" onClick = { this.leave } className="mt-2">Logout</h5>
               </Nav>
             </Collapse>
           </Container>
@@ -201,4 +148,10 @@ class AdminNavbar extends React.Component {
   }
 }
 
-export default AdminNavbar;
+const mapDispatchToProps = dispatch => {
+  return {
+    logout: () => dispatch(resetCredentials())
+  }
+}
+
+export default connect(null, mapDispatchToProps)(AdminNavbar);

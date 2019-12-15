@@ -3,7 +3,6 @@ import {
   FETCH_SUMMARY_REPORT_SUCCESS,
   FETCH_STOP_REPORT_SUCCESS,
   FETCH_EVENT_REPORT_SUCCESS,
-  FETCH_REPORT_FAILED,
   RESET_REPORTS
 } from "../actions/actionTypes";
 
@@ -45,8 +44,6 @@ export default (state = init, action) => {
           action.payload.devices
         ).generateMarshall()
       });
-    case FETCH_REPORT_FAILED:
-      return Object.assign({}, state);
     case RESET_REPORTS:
       return Object.assign({}, state, {
         report: [],

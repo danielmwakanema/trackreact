@@ -5,9 +5,13 @@ import {
   FETCH_TRIP_REPORT_SUCCESS,
   FETCH_STOP_REPORT_SUCCESS,
   FETCH_EVENT_REPORT_SUCCESS,
-  FETCH_REPORT_FAILED,
   RESET_REPORTS
 } from "./actionTypes";
+
+import { requestFailed } from "./genericActions";
+
+const cred = state =>
+  Object.assign({}, { email: state.User.email, password: state.User.password });
 
 const fetchTripReportSuccess = payload => {
   return { type: FETCH_TRIP_REPORT_SUCCESS, payload }
@@ -23,10 +27,6 @@ const fetchStopReportSuccess = payload => {
 
 const fetchEventReportSuccess = (report, devices) => {
   return { type: FETCH_EVENT_REPORT_SUCCESS, payload: { report, devices } };
-};
-
-const fetchReportFailed = () => {
-  return { type: FETCH_REPORT_FAILED };
 };
 
 const resetReportsCreator = () => {
@@ -47,17 +47,14 @@ export const fetchReport = (ids = [], type = "", startDate, endDate, isGroup = f
     ""
   );
   return (dispatch, getState) => {
-    const client = TraccarAPI({
-      email: getState().User.email,
-      password: getState().User.password
-    });
+    const client = TraccarAPI(cred(getState()));
     client
       .get(`/reports/${type}?${requestString}&from=${startDate}&to=${endDate}`)
       .then(res => {
         const devices = getState().Device.devices
         dispatch(ACTION_REDUCER_MAP[type](res.data, devices));
       })
-      .catch(() => { dispatch(fetchReportFailed()); });
+      .catch(error => dispatch(requestFailed(error)));
   };
 };
 

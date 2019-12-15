@@ -16,6 +16,8 @@ import {
 import "./Login.css";
 
 import { login } from "../../Redux/actions/userActions";
+import { hideNotification } from "../../Redux/actions/notificationActions";
+import NotificationsModal from "../../components/Modals/InfoModal";
 
 class Login extends React.Component {
   constructor(props) {
@@ -27,7 +29,7 @@ class Login extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  componentDidUpdate (previousProps) {
+  componentDidUpdate(previousProps) {
     if (this.props.userIsAvailable !== previousProps.userIsAvailable) {
       this.props.history.push("/admin/dashboard")
     }
@@ -69,7 +71,7 @@ class Login extends React.Component {
                       name="email"
                       id="exampleEmail"
                       placeholder="Enter email"
-                      onChange={ event => this.handleChange(event) }
+                      onChange={event => this.handleChange(event)}
                     />
                     <FormText color="muted">
                       We'll never share your email with anyone else.
@@ -83,13 +85,13 @@ class Login extends React.Component {
                       id="examplePassword"
                       placeholder="Password"
                       autoComplete="off"
-                      onChange={ event => this.handleChange(event) }
+                      onChange={event => this.handleChange(event)}
                     />
                   </FormGroup>
                   <Button
                     color="primary"
                     type="submit"
-                    onClick={ event => this.handleSubmit(event) }
+                    onClick={event => this.handleSubmit(event)}
                   >
                     Submit
                   </Button>
@@ -98,6 +100,14 @@ class Login extends React.Component {
             </Card>
           </Col>
         </Row>
+        {this.props.notification.show && (
+          <NotificationsModal
+            header={this.props.notification.title}
+            message={this.props.notification.message}
+            toggle={this.props.hideNotification}
+            isOpen={this.props.notification.show}
+          />
+        )}
       </div>
     );
   }
@@ -105,13 +115,15 @@ class Login extends React.Component {
 
 const mapStateToProps = state => {
   return {
-    userIsAvailable: state.User.email.length > 0 && state.User.password.length > 0
+    userIsAvailable: state.User.email.length > 0 && state.User.password.length > 0,
+    notification: state.Notification
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    login: data => dispatch(login(data))
+    login: data => dispatch(login(data)),
+    hideNotification: () => dispatch(hideNotification())
   };
 };
 
