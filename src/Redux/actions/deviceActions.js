@@ -1,7 +1,8 @@
 import TraccarAPI from "../../lib/TraccarAPI";
 import {
   RESET_USER_DEVICES_LIST,
-  GET_USER_DEVICES_SUCCESS
+  GET_USER_DEVICES_SUCCESS,
+  GET_DEVICE_TRIPS_SUCCESS
 } from "./actionTypes";
 
 import { requestFailed, requestSuccess } from "./genericActions";
@@ -12,6 +13,10 @@ const cred = state =>
 const getUserDevicesSuccess = payload => {
   return { type: GET_USER_DEVICES_SUCCESS, payload: { devices: payload } };
 };
+
+const getDeviceTripsSuccess = payload => {
+  return { type: GET_DEVICE_TRIPS_SUCCESS, payload }
+}
 
 export const resetUserDevicesList = () => {
   return { type: RESET_USER_DEVICES_LIST };
@@ -53,6 +58,16 @@ export const userDevices = () => {
     client
       .get(`/devices?userId=${getState().User.id}`)
       .then(res => dispatch(getUserDevicesSuccess(res.data)))
+      .catch(error => dispatch(requestFailed(error)));
+  };
+};
+
+export const deviceTrips = (id, start, end) => {
+  return (dispatch, getState) => {
+    const client = TraccarAPI(cred(getState()));
+    client
+      .get(`/reports/trips?deviceId=${id}&from=${start}&to=${end}`)
+      .then(res => dispatch(getDeviceTripsSuccess(res.data)))
       .catch(error => dispatch(requestFailed(error)));
   };
 };
