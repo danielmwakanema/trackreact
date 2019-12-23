@@ -7,6 +7,7 @@ import GeofenceIndex from './views/Geofences/Index';
 import GroupIndex from './views/Groups/Index';
 import DriverIndex from './views/Drivers/Index';
 import MaintenanceIndex from './views/Maintenances/Index';
+import TripsIndex from './views/Trips/Index';
 
 import DeviceLinks from './Routes/Devices';
 import GeofenceLinks from './Routes/Geofences';
@@ -75,6 +76,13 @@ var routes = [
     layout: "/admin",
     path: '/reports/group',
     component: GroupReportIndex
+  },
+  {
+    name: "Trips",
+    icon: "tim-icons icon-triangle-right-17",
+    layout: "/admin",
+    path: '/reports/trip',
+    component: TripsIndex
   }
 ];
 
