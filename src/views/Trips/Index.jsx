@@ -4,6 +4,7 @@ import { Row, Col, Card, CardBody, Form, FormGroup, Input } from 'reactstrap';
 
 import Utils from '../../utils';
 import { deviceTrips } from '../../Redux/actions/deviceActions';
+import { showNotification } from "../../Redux/actions/notificationActions";
 import PathTracer from "../../components/Maps/PathTracer";
 
 class Index extends Component {
@@ -20,7 +21,7 @@ class Index extends Component {
     if (this.paramsAreValid(fieldValues)) {
       const [id, startDate, endDate] = fieldValues
       this.props.deviceTrips(id, this.toIso(startDate), this.toIso(endDate))
-    } else alert('Invalid params...')
+    } else this.props.showNotification('Error', 'Please make sure to enter valid information.')
   }
 
   handlePlot = evt => {
@@ -151,7 +152,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    deviceTrips: (id, start, end) => dispatch(deviceTrips(id, start, end))
+    deviceTrips: (id, start, end) => dispatch(deviceTrips(id, start, end)),
+    showNotification: (title, message) => dispatch(showNotification({ title, message }))
   }
 }
 
