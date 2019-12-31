@@ -16,6 +16,7 @@ import {
 } from "reactstrap";
 
 import { updateDriver } from "../../Redux/actions/driverActions";
+import { showNotification } from "../../Redux/actions/notificationActions";
 import Utils from "../../utils";
 
 class Edit extends React.Component {
@@ -33,7 +34,7 @@ class Edit extends React.Component {
       const id = this.props.driver.id;
       const merge = Object.assign({}, this.props.driver, this.prep(data));
       this.props.updateDriver(id, merge);
-    } else alert("The supplied information is invalid.");
+    } else this.props.showNotification('Error', 'Please make sure to enter valid information.')
   };
 
   prep = payload => {
@@ -161,7 +162,8 @@ const mapDispatchToProps = dispatch => {
   return {
     updateDriver: (id, payload) => {
       dispatch(updateDriver(id, payload));
-    }
+    },
+    showNotification: (title, message) => dispatch(showNotification({ title, message }))
   };
 };
 
