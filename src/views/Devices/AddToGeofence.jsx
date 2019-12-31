@@ -34,7 +34,7 @@ class AddToGeofence extends React.Component {
   }
 
   handleSubmit() {
-    this.props.updateDevice(this.prepPayload());
+    this.props.updateDevice(this.state.id, this.prepPayload());
   }
 
   prepPayload() {
@@ -104,7 +104,7 @@ const mapDispatchToProps = dispatch => {
   return {
     userGeofences: () => dispatch(userGeofences()),
     userDevices: () => dispatch(userDevices()),
-    updateDevice: payload => dispatch(updateDevice(payload))
+    updateDevice: (id, payload) => dispatch(updateDevice(id, payload))
   };
 };
 
