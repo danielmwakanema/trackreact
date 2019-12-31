@@ -2,7 +2,8 @@ import TraccarAPI from "../../lib/TraccarAPI";
 import {
   RESET_USER_DEVICES_LIST,
   GET_USER_DEVICES_SUCCESS,
-  GET_DEVICE_TRIPS_SUCCESS
+  GET_DEVICE_TRIPS_SUCCESS,
+  SET_DEVICE
 } from "./actionTypes";
 
 import { requestFailed, requestSuccess } from "./genericActions";
@@ -32,11 +33,23 @@ export const addDevice = payload => {
   };
 };
 
-export const updateDevice = payload => {
+export const updateDevice = (id, payload) => {
   return (dispatch, getState) => {
     const client = TraccarAPI(cred(getState()));
     client
-      .put(`/devices/${payload.id}`, payload)
+      .put(`/devices/${id}`, payload)
+      .then(() => dispatch(requestSuccess()))
+      .catch(error => dispatch(requestFailed(error)));
+  };
+};
+
+export const setDevice = payload => ({ type: SET_DEVICE, payload });
+
+export const deleteDevice = id => {
+  return (dispatch, getState) => {
+    const client = TraccarAPI(cred(getState()));
+    client
+      .delete(`/devices/${id}`)
       .then(() => dispatch(requestSuccess()))
       .catch(error => dispatch(requestFailed(error)));
   };

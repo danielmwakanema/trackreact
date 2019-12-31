@@ -13,7 +13,7 @@ import {
   Col
 } from "reactstrap";
 
-import { userDevices } from "../../Redux/actions/deviceActions";
+import { userDevices, setDevice, deleteDevice } from "../../Redux/actions/deviceActions";
 
 import "./Index.css";
 
@@ -60,6 +60,16 @@ class Index extends React.Component {
                                 <td>{device.category}</td>
                                 <td>
                                   <Link
+                                    onClick={ () => { this.props.setDevice(device); this.props.history.push(`/admin/device/edit/${device.id}`) }}
+                                  >
+                                    - Edit
+                                  </Link><br />
+                                  <Link
+                                    onClick={ () => { this.props.deleteDevice(device.id) }}
+                                  >
+                                    - Delete
+                                  </Link><br />
+                                  <Link
                                     to={`/admin/device/addToGroup/${device.id}`}
                                   >
                                     + Group
@@ -98,7 +108,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    userDevices: () => dispatch(userDevices())
+    userDevices: () => dispatch(userDevices()),
+    setDevice: payload => dispatch(setDevice(payload)),
+    deleteDevice: id => dispatch(deleteDevice(id))
   };
 };
 

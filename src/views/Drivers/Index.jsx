@@ -14,7 +14,9 @@ import {
 } from "reactstrap";
 
 import {
-  userDrivers
+  userDrivers,
+  deleteDriver,
+  setDriver
 } from "../../Redux/actions/driverActions";
 
 import "./Index.css";
@@ -45,6 +47,7 @@ class Index extends React.Component {
                           <th>License Number</th>
                           <th>License Expiry Date</th>
                           <th>Address</th>
+                          <th>Actions</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -57,6 +60,18 @@ class Index extends React.Component {
                                 <td>{driver.attributes.licenseNumber}</td>
                                 <td>{driver.attributes.licenseExpiryDate}</td>
                                 <td>{driver.attributes.homeAddress}</td>
+                                <td>
+                                  <Link
+                                    onClick={ () => { this.props.setDriver(driver); this.props.history.push(`/admin/driver/edit/${driver.id}`) }}
+                                  >
+                                    - Edit
+                                  </Link><br />
+                                  <Link
+                                    onClick={ () => { this.props.deleteDriver(driver.id) }}
+                                  >
+                                    - Delete
+                                  </Link><br />
+                                </td>
                               </tr>
                             );
                           })}
@@ -85,7 +100,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    userDrivers: () => dispatch(userDrivers())
+    userDrivers: () => dispatch(userDrivers()),
+    setDriver: payload => dispatch(setDriver(payload)),
+    deleteDriver: id => dispatch(deleteDriver(id))
   };
 };
 

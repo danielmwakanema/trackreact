@@ -15,26 +15,24 @@ import {
   Col
 } from "reactstrap";
 
-import { updateDevice } from "../../Redux/actions/deviceActions";
+import { addUser } from "../../Redux/actions/userActions";
 import Utils from "../../utils";
 
-class Edit extends React.Component {
+class Add extends React.Component {
   FIELD_IDS = [
-    "uniqueId",
     "name",
-    "status",
+    "email",
+    "administrator",
     "disabled",
-    "model",
-    "category",
+    "password",
+    "userLimit",
+    "deviceLimit"
   ];
 
   handleSubmit = () => {
     const data = this.params();
-    if (this.paramsAreValid(Object.values(data))) {
-      const id = this.props.device.id;
-      const merge =Object.assign({}, this.props.device, data);
-      this.props.updateDevice(id, merge)
-    } else alert("The supplied information is invalid.");
+    if (this.paramsAreValid(Object.values(data))) this.props.addUser(data);
+    else alert("The supplied information is invalid.");
   };
 
   params = () => Utils.formFieldMap(this.FIELD_IDS);
@@ -50,30 +48,16 @@ class Edit extends React.Component {
             <Col md="7">
               <Card>
                 <CardHeader>
-                  <h5 className="title">Edit Device</h5>
+                  <h5 className="title">Add User</h5>
                 </CardHeader>
                 <CardBody>
                   <Form>
                     <Row>
                       <Col className="pr-md-1" md="11">
                         <FormGroup>
-                          <label>Unique ID</label>
+                          <label>Fullame</label>
                           <Input
-                            defaultValue={this.props.device.uniqueId}
-                            placeholder="Unique identifier"
-                            type="text"
-                            id="uniqueId"
-                            name="uniqueId"
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col className="pr-md-1" md="11">
-                        <FormGroup>
-                          <label>Name</label>
-                          <Input
-                            defaultValue={this.props.device.name}
+                            defaultValue=""
                             placeholder="Name"
                             type="text"
                             id="name"
@@ -85,14 +69,28 @@ class Edit extends React.Component {
                     <Row>
                       <Col className="pr-md-1" md="11">
                         <FormGroup>
-                          <label>Status</label>
+                          <label>Email</label>
+                          <Input
+                            defaultValue=""
+                            placeholder="Email"
+                            type="email"
+                            id="email"
+                            name="email"
+                          />
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col className="pr-md-1" md="11">
+                        <FormGroup>
+                          <label>Is an administrator?</label>
                           <select
-                            id="status"
-                            name="status"
+                            id="administrator"
+                            name="administrator"
                             className={"form-control"}
                           >
-                            <option value="Active">Active</option>
-                            <option value="Inactive">Inactive</option>
+                            <option value="true">Yes</option>
+                            <option value="false">No</option>
                           </select>
                         </FormGroup>
                       </Col>
@@ -100,7 +98,7 @@ class Edit extends React.Component {
                     <Row>
                       <Col className="pr-md-1" md="11">
                         <FormGroup>
-                          <label>Disabled</label>
+                          <label>Is disabled?</label>
                           <select
                             id="disabled"
                             name="disabled"
@@ -115,13 +113,13 @@ class Edit extends React.Component {
                     <Row>
                       <Col className="pr-md-1" md="11">
                         <FormGroup>
-                          <label>Model</label>
+                          <label>Password</label>
                           <Input
-                            defaultValue={this.props.device.model}
-                            type="text"
-                            placeholder="Model"
-                            id="model"
-                            name="model"
+                            defaultValue=""
+                            placeholder="Password"
+                            type="password"
+                            id="password"
+                            name="password"
                           />
                         </FormGroup>
                       </Col>
@@ -129,13 +127,27 @@ class Edit extends React.Component {
                     <Row>
                       <Col className="pr-md-1" md="11">
                         <FormGroup>
-                          <label>Category</label>
+                          <label>Device Limit</label>
                           <Input
-                            defaultValue={this.props.device.category}
-                            type="text"
-                            placeholder="Category"
-                            id="category"
-                            name="category"
+                            defaultValue=""
+                            placeholder="Device limit"
+                            type="number"
+                            id="deviceLimit"
+                            name="deviceLimit"
+                          />
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col className="pr-md-1" md="11">
+                        <FormGroup>
+                          <label>User Limit</label>
+                          <Input
+                            defaultValue=""
+                            placeholder="User limit"
+                            type="number"
+                            id="userLimit"
+                            name="userLimit"
                           />
                         </FormGroup>
                       </Col>
@@ -161,17 +173,12 @@ class Edit extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({ device: state.Device.device });
-
 const mapDispatchToProps = dispatch => {
   return {
-    updateDevice: (id, payload) => {
-      dispatch(updateDevice(id, payload));
+    addUser: payload => {
+      dispatch(addUser(payload));
     }
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Edit);
+export default connect(null, mapDispatchToProps)(Add);

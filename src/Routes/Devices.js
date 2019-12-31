@@ -1,6 +1,6 @@
 import Add from '../views/Devices/Add';
 import Index from '../views/Devices/Index';
-import View from '../views/Devices/View';
+import Edit from '../views/Devices/Edit';
 import AddToGroup from '../views/Devices/AddToGroup';
 import AddToGeofence from '../views/Devices/AddToGeofence';
 
@@ -27,10 +27,10 @@ export default [
     layout: "/admin"
   },
   {
-    path: "/device/view/:id",
-    name: "View Device",
-    icon: "tim-icons icon-simple-add",
-    component: View,
+    path: "/device/edit/:id",
+    name: "Edit Device",
+    icon: "tim-icons icon-pencil",
+    component: Edit,
     layout: "/admin"
   },
   {

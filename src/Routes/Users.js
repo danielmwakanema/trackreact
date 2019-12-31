@@ -1,17 +1,17 @@
-import Add from '../views/Drivers/Add';
-import Edit from '../views/Drivers/Edit';
+import Add from '../views/User/Add';
+import Edit from '../views/User/Edit';
 
 export default [
   {
-    path: "/driver/add",
-    name: "Add Driver",
+    path: "/user/add",
+    name: "Add User",
     icon: "tim-icons icon-simple-add",
     component: Add,
     layout: "/admin"
   },
   {
-    path: "/driver/edit/:id",
-    name: "Edit Driver",
+    path: "/user/edit/:id",
+    name: "Edit User",
     icon: "tim-icons icon-pencil",
     component: Edit,
     layout: "/admin"

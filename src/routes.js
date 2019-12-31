@@ -8,12 +8,14 @@ import GroupIndex from './views/Groups/Index';
 import DriverIndex from './views/Drivers/Index';
 import MaintenanceIndex from './views/Maintenances/Index';
 import TripsIndex from './views/Trips/Index';
+import UserIndex from './views/User/Index';
 
 import DeviceLinks from './Routes/Devices';
 import GeofenceLinks from './Routes/Geofences';
 import GroupLinks from './Routes/Groups';
 import DriverLinks from './Routes/Drivers';
 import MaintenanceLinks from './Routes/Maintenances';
+import UserLinks from './Routes/Users';
 
 var routes = [
   {
@@ -83,6 +85,14 @@ var routes = [
     layout: "/admin",
     path: '/reports/trip',
     component: TripsIndex
+  },
+  {
+    path: "/users",
+    name: "Users",
+    icon: "tim-icons icon-chart-pie-36",
+    component: UserIndex,
+    layout: "/admin",
+    children: UserLinks
   }
 ];
 

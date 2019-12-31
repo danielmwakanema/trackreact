@@ -40,7 +40,7 @@ const ACTION_REDUCER_MAP = {
   'events': fetchEventReportSuccess
 }
 
-export const fetchReport = (ids = [], type = "", startDate, endDate, isGroup = false) => {
+export const fetchReport = (ids, type, startDate, endDate, isGroup = false) => {
   const key = isGroup ? 'groupId' : 'deviceId';
   const requestString = ids.reduce(
     (acc, val, index) => index === 0 ? `${key}=${val}` : `${acc}&${key}=${val}`,
@@ -51,7 +51,7 @@ export const fetchReport = (ids = [], type = "", startDate, endDate, isGroup = f
     client
       .get(`/reports/${type}?${requestString}&from=${startDate}&to=${endDate}`)
       .then(res => {
-        const devices = getState().Device.devices
+        const devices = getState().Device.devices;
         dispatch(ACTION_REDUCER_MAP[type](res.data, devices));
       })
       .catch(error => dispatch(requestFailed(error)));
@@ -59,5 +59,5 @@ export const fetchReport = (ids = [], type = "", startDate, endDate, isGroup = f
 };
 
 export const resetReports = () => {
-  return dispatch => dispatch(resetReportsCreator())
-}
+  return dispatch => dispatch(resetReportsCreator());
+};
