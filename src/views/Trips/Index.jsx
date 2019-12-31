@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Row, Col, Card, CardBody, Form, FormGroup, Input } from 'reactstrap';
 
 import Utils from '../../utils';
-import { deviceTrips } from '../../Redux/actions/deviceActions';
+import { deviceTrips, resetDeviceTrips } from '../../Redux/actions/deviceActions';
 import { showNotification } from "../../Redux/actions/notificationActions";
 import PathTracer from "../../components/Maps/PathTracer";
 
@@ -13,6 +13,10 @@ class Index extends Component {
     this.state = {
       trip: null
     }
+  }
+
+  componentWillUnmount() {
+    this.props.resetDeviceTrips();
   }
 
   handleSubmit = evt => {
@@ -154,7 +158,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     deviceTrips: (id, start, end) => dispatch(deviceTrips(id, start, end)),
-    showNotification: (title, message) => dispatch(showNotification({ title, message }))
+    showNotification: (title, message) => dispatch(showNotification({ title, message })),
+    resetDeviceTrips: () => dispatch(resetDeviceTrips())
   }
 }
 
