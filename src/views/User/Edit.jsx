@@ -16,6 +16,7 @@ import {
 } from "reactstrap";
 
 import { updateUser } from "../../Redux/actions/userActions";
+import { showNotification } from "../../Redux/actions/notificationActions";
 import Utils from "../../utils";
 
 class Edit extends React.Component {
@@ -35,7 +36,7 @@ class Edit extends React.Component {
     if (this.paramsAreValid(Object.values(data))) {
       const merge = Object.assign({}, this.props.user, data)
       this.props.updateUser(id, merge)
-    } else alert("The supplied information is invalid.");
+    } else this.props.showNotification('Error', 'Please make sure to enter valid information.')
   };
 
   params = () => Utils.formFieldMap(this.FIELD_IDS);
@@ -181,7 +182,8 @@ class Edit extends React.Component {
 const mapStateToProps = state => ({ user: state.User.user });
 
 const mapDispatchToProps = dispatch => ({
-  updateUser: (id, payload) => dispatch(updateUser(id, payload))
+  updateUser: (id, payload) => dispatch(updateUser(id, payload)),
+  showNotification: (title, message) => dispatch(showNotification({ title, message }))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Edit);
