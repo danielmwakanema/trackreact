@@ -7,6 +7,7 @@ import {
 } from "./actionTypes";
 
 import { requestFailed, requestSuccess } from "./genericActions";
+import { showNotification } from "./notificationActions";
 
 const cred = state =>
   Object.assign({}, { email: state.User.email, password: state.User.password });
@@ -80,7 +81,10 @@ export const deviceTrips = (id, start, end) => {
     const client = TraccarAPI(cred(getState()));
     client
       .get(`/reports/trips?deviceId=${id}&from=${start}&to=${end}`)
-      .then(res => dispatch(getDeviceTripsSuccess(res.data)))
+      .then(res => {
+        if (res.data.length === 0) dispatch(showNotification({ title: 'Information', message: 'Device has no trips within the given period.' }))
+        dispatch(getDeviceTripsSuccess(res.data))
+      })
       .catch(error => dispatch(requestFailed(error)));
   };
 };
