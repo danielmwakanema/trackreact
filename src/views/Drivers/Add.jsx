@@ -16,62 +16,40 @@ import {
 } from "reactstrap";
 
 import { addDriver } from "../../Redux/actions/driverActions";
+import Utils from "../../utils";
 
 class Add extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      name: "",
-      uniqueId: "",
-      licenseNumber: "",
-      licenseExpiryDate: "",
-      homeAddress: ""
-    };
+  FIELD_IDS = [
+    "name",
+    "uniqueId",
+    "licenseNumber",
+    "licenseExpiryDate",
+    "homeAddress"
+  ];
 
-    this.handleInputChange = this.handleInputChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.inputIsValid = this.inputIsValid.bind(this);
-    this.prepPayload = this.prepPayload.bind(this);
-    this.createDriver = this.createDriver.bind(this);
-  }
-
-  handleInputChange = event => {
-    this.setState({ [event.target.name]: event.target.value });
+  handleSubmit = () => {
+    const data = this.params();
+    if (this.paramsAreValid(Object.values(data)))
+      this.props.addDriver(this.prep(data));
+    else alert("The supplied information is invalid.");
   };
 
-  async createDriver() {
-    const payload = this.prepPayload();
-    this.props.addDriver(payload);
-  }
-
-  async handleSubmit() {
-    if (this.inputIsValid()) {
-      await this.createDriver();
-    } else {
-      alert("The specified input is not valid.");
-    }
-  }
-
-  inputIsValid() {
-    for (const [, val] of Object.entries(this.state)) {
-      if (val === "" || val === undefined) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  prepPayload = () => {
+  prep = payload => {
     return {
-      name: this.state.name,
-      uniqueId: this.state.uniqueId,
+      uniqueId: payload.uniqueId,
+      name: payload.name,
       attributes: {
-        licenseNumber: this.state.licenseNumber,
-        licenseExpiryDate: this.state.licenseExpiryDate,
-        homeAddress: this.state.homeAddress
+        licenseNumber: payload.licenseNumber,
+        licenseExpiryDate: payload.licenseExpiryDate,
+        homeAddress: payload.homeAddress
       }
     };
   };
+
+  params = () => Utils.formFieldMap(this.FIELD_IDS);
+
+  paramsAreValid = (par = []) =>
+    par.reduce((acc, val) => val !== "" && val !== undefined && acc, true);
 
   render() {
     return (
@@ -93,8 +71,8 @@ class Add extends React.Component {
                             defaultValue=""
                             placeholder="Unique identifier"
                             type="text"
+                            id="uniqueId"
                             name="uniqueId"
-                            onChange={this.handleInputChange}
                           />
                         </FormGroup>
                       </Col>
@@ -107,8 +85,8 @@ class Add extends React.Component {
                             defaultValue=""
                             placeholder="Name"
                             type="text"
+                            id="name"
                             name="name"
-                            onChange={this.handleInputChange}
                           />
                         </FormGroup>
                       </Col>
@@ -121,8 +99,8 @@ class Add extends React.Component {
                             defaultValue=""
                             placeholder="License number"
                             type="text"
+                            id="licenseNumber"
                             name="licenseNumber"
-                            onChange={this.handleInputChange}
                           />
                         </FormGroup>
                       </Col>
@@ -134,8 +112,8 @@ class Add extends React.Component {
                           <Input
                             defaultValue=""
                             type="date"
+                            id="licenseExpiryDate"
                             name="licenseExpiryDate"
-                            onChange={this.handleInputChange}
                           />
                         </FormGroup>
                       </Col>
@@ -148,8 +126,8 @@ class Add extends React.Component {
                             defaultValue=""
                             placeholder="Home address"
                             type="textarea"
+                            id="homeAddress"
                             name="homeAddress"
-                            onChange={this.handleInputChange}
                           />
                         </FormGroup>
                       </Col>
@@ -183,7 +161,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(Add);
+export default connect(null, mapDispatchToProps)(Add);
