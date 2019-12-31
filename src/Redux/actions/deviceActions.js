@@ -3,7 +3,8 @@ import {
   RESET_USER_DEVICES_LIST,
   GET_USER_DEVICES_SUCCESS,
   GET_DEVICE_TRIPS_SUCCESS,
-  SET_DEVICE
+  SET_DEVICE,
+  RESET_DEVICE_TRIPS
 } from "./actionTypes";
 
 import { requestFailed, requestSuccess } from "./genericActions";
@@ -23,6 +24,8 @@ const getDeviceTripsSuccess = payload => {
 export const resetUserDevicesList = () => {
   return { type: RESET_USER_DEVICES_LIST };
 };
+
+export const resetDeviceTrips = () => ({ type: RESET_DEVICE_TRIPS });
 
 export const addDevice = payload => {
   return (dispatch, getState) => {
