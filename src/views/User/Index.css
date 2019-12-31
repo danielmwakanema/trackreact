@@ -1,0 +1,7 @@
+*::-webkit-scrollbar { width: 0 !important }
+* { overflow: -moz-scrollbars-none; }
+* { -ms-overflow-style: none; }
+
+p:hover {
+  cursor: pointer;
+}
