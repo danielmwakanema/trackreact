@@ -4,7 +4,8 @@ import {
   GET_USER_DEVICES_SUCCESS,
   RESET_USER_DEVICES_LIST,
   GET_DEVICE_TRIPS_SUCCESS,
-  SET_DEVICE
+  SET_DEVICE,
+  RESET_DEVICE_TRIPS
 } from "../actions/actionTypes";
 
 const init = {
@@ -23,6 +24,8 @@ export default (state = init, action) => {
       return Object.assign({}, state, { deviceTrips: action.payload.map(trip => Object.assign({}, trip, { id: uuid() })) });
     case SET_DEVICE:
       return Object.assign({}, state, { device: action.payload });
+    case RESET_DEVICE_TRIPS:
+      return Object.assign({}, state, { deviceTrips: [] });
     default:
       return state;
   }
