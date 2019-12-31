@@ -16,6 +16,7 @@ import {
 } from "reactstrap";
 
 import { addMaintenance } from "../../Redux/actions/maintenanceActions";
+import { showNotification } from "../../Redux/actions/notificationActions";
 
 class Add extends React.Component {
   constructor(props) {
@@ -45,11 +46,8 @@ class Add extends React.Component {
 
   async handleSubmit(event) {
     event.preventDefault();
-    if (this.inputIsValid()) {
-      await this.createMaintenance();
-    } else {
-      alert("The specified input is not valid.");
-    }
+    if (this.inputIsValid()) await this.createMaintenance();
+    else this.props.showNotification('Error', 'Please make sure to enter valid information.')
   }
 
   inputIsValid() {
@@ -163,7 +161,8 @@ const mapDispatchToProps = dispatch => {
   return {
     addMaintenance: payload => {
       dispatch(addMaintenance(payload));
-    }
+    },
+    showNotification: (title, message) => dispatch(showNotification({ title, message }))
   };
 };
 
