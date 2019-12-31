@@ -19,9 +19,10 @@ class Index extends Component {
     evt.preventDefault()
     const fieldValues = this.params()
     if (this.paramsAreValid(fieldValues)) {
+      this.setState({ trip: null });
       const [id, startDate, endDate] = fieldValues
-      this.props.deviceTrips(id, this.toIso(startDate), this.toIso(endDate))
-    } else this.props.showNotification('Error', 'Please make sure to enter valid information.')
+      this.props.deviceTrips(id, this.toIso(startDate), this.toIso(endDate));
+    } else this.props.showNotification('Error', 'Please make sure to enter valid information.');
   }
 
   handlePlot = evt => {
