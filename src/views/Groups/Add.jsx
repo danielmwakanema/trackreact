@@ -16,6 +16,7 @@ import {
 } from "reactstrap";
 
 import { addGroup } from "../../Redux/actions/groupActions";
+import { showNotification } from "../../Redux/actions/notificationActions";
 
 class Add extends React.Component {
   constructor(props) {
@@ -41,11 +42,8 @@ class Add extends React.Component {
   }
 
   async handleSubmit() {
-    if (this.inputIsValid()) {
-      await this.createGroup();
-    } else {
-      alert("The specified input is not valid.");
-    }
+    if (this.inputIsValid()) await this.createGroup();
+    else this.props.showNotification('Error', 'Please make sure to enter valid information.')
   }
 
   inputIsValid() {
@@ -114,7 +112,8 @@ const mapDispatchToProps = dispatch => {
   return {
     addGroup: payload => {
       dispatch(addGroup(payload));
-    }
+    },
+    showNotification: (title, message) => dispatch(showNotification({ title, message }))
   };
 };
 
