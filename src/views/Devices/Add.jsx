@@ -16,61 +16,28 @@ import {
 } from "reactstrap";
 
 import { addDevice } from "../../Redux/actions/deviceActions";
+import Utils from "../../utils";
 
 class Add extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      name: "",
-      uniqueId: "",
-      model: "",
-      category: ""
-    };
+  FIELD_IDS = [
+    "uniqueId",
+    "name",
+    "status",
+    "disabled",
+    "model",
+    "category",
+  ];
 
-    this.handleInputChange = this.handleInputChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.inputIsValid = this.inputIsValid.bind(this);
-    this.prepPayload = this.prepPayload.bind(this);
-    this.createDevice = this.createDevice.bind(this);
-  }
-
-  handleInputChange = event => {
-    this.setState({ [event.target.name]: event.target.value });
+  handleSubmit = () => {
+    const data = this.params();
+    if (this.paramsAreValid(Object.values(data))) this.props.addDevice(data)
+    else alert("The supplied information is invalid.");
   };
 
-  async createDevice() {
-    const payload = this.prepPayload();
-    this.props.addDevice(payload);
-  }
+  params = () => Utils.formFieldMap(this.FIELD_IDS);
 
-  async handleSubmit(event) {
-    event.preventDefault();
-    if (this.inputIsValid()) {
-      await this.createDevice();
-    } else {
-      alert("The specified input is not valid.");
-    }
-  }
-
-  inputIsValid() {
-    for (const [, val] of Object.entries(this.state)) {
-      if (val === "" || val === undefined) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  prepPayload = () => {
-    return {
-      name: this.state.name,
-      uniqueId: this.state.uniqueId,
-      status: document.getElementById('status').value,
-      disabled: Boolean(document.getElementById('disabled').value),
-      category: this.state.category,
-      model: this.state.model
-    };
-  };
+  paramsAreValid = (par = []) =>
+    par.reduce((acc, val) => val !== "" && val !== undefined && acc, true);
 
   render() {
     return (
@@ -80,7 +47,7 @@ class Add extends React.Component {
             <Col md="7">
               <Card>
                 <CardHeader>
-                  <h5 className="title">Add Device</h5>
+                  <h5 className="title">Edit Device</h5>
                 </CardHeader>
                 <CardBody>
                   <Form>
@@ -92,8 +59,8 @@ class Add extends React.Component {
                             defaultValue=""
                             placeholder="Unique identifier"
                             type="text"
+                            id="uniqueId"
                             name="uniqueId"
-                            onChange={this.handleInputChange}
                           />
                         </FormGroup>
                       </Col>
@@ -106,8 +73,8 @@ class Add extends React.Component {
                             defaultValue=""
                             placeholder="Name"
                             type="text"
+                            id="name"
                             name="name"
-                            onChange={this.handleInputChange}
                           />
                         </FormGroup>
                       </Col>
@@ -119,7 +86,6 @@ class Add extends React.Component {
                           <select
                             id="status"
                             name="status"
-                            onChange={this.handleInputChange}
                             className={"form-control"}
                           >
                             <option value="Active">Active</option>
@@ -135,11 +101,10 @@ class Add extends React.Component {
                           <select
                             id="disabled"
                             name="disabled"
-                            onChange={this.handleInputChange}
                             className={"form-control"}
                           >
-                            <option value="true">Yes</option>
                             <option value="false">No</option>
+                            <option value="true">Yes</option>
                           </select>
                         </FormGroup>
                       </Col>
@@ -151,9 +116,9 @@ class Add extends React.Component {
                           <Input
                             defaultValue=""
                             type="text"
-                            placeholder="XAB112"
+                            placeholder="Model"
+                            id="model"
                             name="model"
-                            onChange={this.handleInputChange}
                           />
                         </FormGroup>
                       </Col>
@@ -165,9 +130,9 @@ class Add extends React.Component {
                           <Input
                             defaultValue=""
                             type="text"
-                            placeholder="Cab"
+                            placeholder="Category"
+                            id="category"
                             name="category"
-                            onChange={this.handleInputChange}
                           />
                         </FormGroup>
                       </Col>
