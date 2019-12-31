@@ -16,6 +16,7 @@ import {
 } from "reactstrap";
 
 import { addUser } from "../../Redux/actions/userActions";
+import { showNotification } from "../../Redux/actions/notificationActions";
 import Utils from "../../utils";
 
 class Add extends React.Component {
@@ -32,7 +33,7 @@ class Add extends React.Component {
   handleSubmit = () => {
     const data = this.params();
     if (this.paramsAreValid(Object.values(data))) this.props.addUser(data);
-    else alert("The supplied information is invalid.");
+    else this.props.showNotification('Error', 'Please make sure to enter valid information.')
   };
 
   params = () => Utils.formFieldMap(this.FIELD_IDS);
@@ -177,7 +178,8 @@ const mapDispatchToProps = dispatch => {
   return {
     addUser: payload => {
       dispatch(addUser(payload));
-    }
+    },
+    showNotification: (title, message) => dispatch(showNotification({ title, message }))
   };
 };
 
