@@ -18,6 +18,7 @@ import {
 import Map from "../../components/Maps/Map";
 
 import { addGeofence } from "../../Redux/actions/geofenceActions";
+import { showNotification } from "../../Redux/actions/notificationActions";
 
 import { MVCArrayToWkt } from "../../lib/WKTUtils";
 
@@ -106,11 +107,8 @@ class Add extends React.Component {
   }
 
   async handleSubmit() {
-    if (this.inputIsValid()) {
-      await this.createGeofence();
-    } else {
-      alert("The specified input is not valid.");
-    }
+    if (this.inputIsValid()) await this.createGeofence();
+    else this.props.showNotification('Error', 'Please make sure to enter valid information.')
   }
 
   inputIsValid() {
@@ -204,7 +202,8 @@ const mapDispatchToProps = dispatch => {
   return {
     addGeofence: payload => {
       dispatch(addGeofence(payload));
-    }
+    },
+    showNotification: (title, message) => dispatch(showNotification({ title, message }))
   };
 };
 
