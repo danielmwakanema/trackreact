@@ -5,6 +5,7 @@ import moment from 'moment';
 import { Line } from "react-chartjs-2";
 import { fetchReport, resetReports } from "../../Redux/actions/reportActions";
 import { userGroups } from "../../Redux/actions/groupActions";
+import { showNotification } from "../../Redux/actions/notificationActions";
 import Utils from "../../utils";
 import ToCSV from "../../components/Utils/ToCSV";
 
@@ -33,7 +34,7 @@ class Dashboard extends React.Component {
     if (this.paramsAreValid(fieldValues)) {
       const [id, reportType, startDate, endDate] = fieldValues
       this.props.fetchReport([id], reportType, this.toIso(startDate), this.toIso(endDate))
-    } else alert('Invalid params...')
+    } else this.props.showNotification('Error', 'Please make sure to enter valid information.')
   }
 
   paramsAreValid = params => params.reduce((acc, val) => acc && (val !== ''), true)
@@ -372,7 +373,8 @@ const mapDispatchToProps = dispatch => {
   return {
     fetchReport: (ids = [], type, startDate, endDate) => dispatch(fetchReport(ids, type, startDate, endDate, true)),
     resetReports: () => dispatch(resetReports()),
-    userGroups: () => dispatch(userGroups())
+    userGroups: () => dispatch(userGroups()),
+    showNotification: (title, message) => dispatch(showNotification({ title, message }))
   };
 };
 
