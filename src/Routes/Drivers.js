@@ -1,6 +1,5 @@
 import Add from '../views/Drivers/Add';
-import Index from '../views/Drivers/Index';
-import View from '../views/Drivers/View';
+import Edit from '../views/Drivers/Edit';
 
 export default [
   {
@@ -11,17 +10,10 @@ export default [
     layout: "/admin"
   },
   {
-    path: "/driver/view/:id",
-    name: "View Driver",
-    icon: "tim-icons icon-simple-add",
-    component: View,
-    layout: "/admin"
-  },
-  {
-    path: "/drivers",
-    name: "Driver List",
-    icon: "tim-icons icon-bullet-list-67",
-    component: Index,
+    path: "/driver/edit/:id",
+    name: "Edit Driver",
+    icon: "tim-icons icon-pencil",
+    component: Edit,
     layout: "/admin"
   }
 ]
