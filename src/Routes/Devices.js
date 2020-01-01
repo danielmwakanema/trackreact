@@ -1,4 +1,5 @@
 import Add from '../views/Devices/Add';
+import View from '../views/Devices/View';
 import Index from '../views/Devices/Index';
 import Edit from '../views/Devices/Edit';
 import AddToGroup from '../views/Devices/AddToGroup';
@@ -31,6 +32,13 @@ export default [
     name: "Edit Device",
     icon: "tim-icons icon-pencil",
     component: Edit,
+    layout: "/admin"
+  },
+  {
+    path: "/device/view/:id",
+    name: "View Device",
+    icon: "tim-icons icon-video-66",
+    component: View,
     layout: "/admin"
   },
   {
