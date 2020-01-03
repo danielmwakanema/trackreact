@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import moment from 'moment';
+import moment from "moment";
 // react plugin used to create charts
 import { Line } from "react-chartjs-2";
 import { fetchReport, resetReports } from "../../Redux/actions/reportActions";
@@ -10,7 +10,25 @@ import Utils from "../../utils";
 import ToCSV from "../../components/Utils/ToCSV";
 
 // reactstrap components
-import { Card, CardHeader, CardBody, CardTitle, Row, Col, FormGroup, Input, Form, Table } from "reactstrap";
+import Map from "../../components/Maps/NormalMap";
+
+// reactstrap components
+import {
+  Card,
+  CardHeader,
+  CardBody,
+  CardTitle,
+  Row,
+  Col,
+  FormGroup,
+  Input,
+  Form,
+  Table,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  Button
+} from "reactstrap";
 
 // core components
 import {
@@ -20,6 +38,35 @@ import {
 } from "variables/charts.jsx";
 
 class Dashboard extends React.Component {
+  constructor(props) {
+    super(props);
+    this.GOOGLE_MAPS_URL = `https://maps.googleapis.com/maps/api/js?libraries=geometry,drawing&key=${process.env.REACT_APP_GOOGLE_PLATFORM_API_KEY}`;
+    this.state = {
+      currentrReport: null,
+      currentStop: null,
+      showStopModal: false
+    };
+  }
+
+  setStop = stop =>
+    this.setState(
+      Object.assign({}, this.state, {
+        currentStop: {
+          name: stop.name,
+          lat: stop.lat,
+          lng: stop.lon
+        }
+      }),
+      this.toggalModal
+    );
+
+  toggalModal = () =>
+    this.setState(
+      Object.assign({}, this.state, {
+        showStopModal: !this.state.showStopModal
+      })
+    );
+
   componentDidMount() {
     this.props.userGroups();
   }
@@ -29,19 +76,30 @@ class Dashboard extends React.Component {
   }
 
   handleSubmit = evt => {
-    evt.preventDefault()
-    const fieldValues = this.params()
+    evt.preventDefault();
+    const fieldValues = this.params();
     if (this.paramsAreValid(fieldValues)) {
-      const [id, reportType, startDate, endDate] = fieldValues
-      this.props.fetchReport([id], reportType, this.toIso(startDate), this.toIso(endDate))
-    } else this.props.showNotification('Error', 'Please make sure to enter valid information.')
-  }
+      const [id, reportType, startDate, endDate] = fieldValues;
+      this.props.fetchReport(
+        [id],
+        reportType,
+        this.toIso(startDate),
+        this.toIso(endDate)
+      );
+    } else
+      this.props.showNotification(
+        "Error",
+        "Please make sure to enter valid information."
+      );
+  };
 
-  paramsAreValid = params => params.reduce((acc, val) => acc && (val !== ''), true)
+  paramsAreValid = params =>
+    params.reduce((acc, val) => acc && val !== "", true);
 
-  params = () => Utils.formFieldValues(['groupId', 'reportType', 'startDate', 'endDate'])
+  params = () =>
+    Utils.formFieldValues(["groupId", "reportType", "startDate", "endDate"]);
 
-  toIso = date => `${date}T00:00:00Z`
+  toIso = date => `${date}T00:00:00Z`;
 
   render() {
     return (
@@ -62,7 +120,11 @@ class Dashboard extends React.Component {
                             onChange={this.handleInputChange}
                           >
                             <>
-                              {this.props.groups.map(group => <option key={group.id} value={group.id}>{group.name}</option>)}
+                              {this.props.groups.map(group => (
+                                <option key={group.id} value={group.id}>
+                                  {group.name}
+                                </option>
+                              ))}
                             </>
                           </select>
                         </FormGroup>
@@ -110,7 +172,10 @@ class Dashboard extends React.Component {
                             value="Run Report"
                             type="submit"
                             onClick={this.handleSubmit}
-                            style={{ backgroundColor: "#2c66f5", color: "white" }}
+                            style={{
+                              backgroundColor: "#2c66f5",
+                              color: "white"
+                            }}
                           />
                         </FormGroup>
                       </Col>
@@ -120,175 +185,236 @@ class Dashboard extends React.Component {
               </Card>
             </Col>
           </Row>
-          {this.props.tripReport && <div>
-            <Row>
-              <Col lg="2">
-                <Card className="card-chart">
-                  <CardHeader>
-                    <h5 className="card-category">Total # of Trips</h5>
-                    <CardTitle tag="h3">
-                      <i className="tim-icons icon-cart text-info" /> {this.props.tripReport.trips}
-                    </CardTitle>
-                  </CardHeader>
-                </Card>
-              </Col>
-              <Col lg="2">
-                <Card className="card-chart">
-                  <CardHeader>
-                    <h5 className="card-category">Average Speed</h5>
-                    <CardTitle tag="h3">
-                      <i className="tim-icons icon-delivery-fast text-info" /> {this.props.tripReport.speedAverage}
-                    </CardTitle>
-                  </CardHeader>
-                </Card>
-              </Col>
-              <Col lg="2">
-                <Card className="card-chart">
-                  <CardHeader>
-                    <h5 className="card-category">Average Fuel Used</h5>
-                    <CardTitle tag="h3">
-                      <i className="tim-icons icon-money-coins text-info" /> {this.props.tripReport.fuelAverage} L
-                  </CardTitle>
-                  </CardHeader>
-                </Card>
-              </Col>
-              <Col lg="2">
-                <Card className="card-chart">
-                  <CardHeader>
-                    <h5 className="card-category">Total Distance Covered</h5>
-                    <CardTitle tag="h3">
-                      <i className="tim-icons icon-compass-05 text-info" /> {this.props.tripReport.distanceTotal}
-                    </CardTitle>
-                  </CardHeader>
-                </Card>
-              </Col>
-              <Col lg="2">
-                <Card className="card-chart">
-                  <CardHeader>
-                    <h5 className="card-category">Average Trip Duration</h5>
-                    <CardTitle tag="h3">
-                      <i className="tim-icons icon-globe-2 text-info" /> {this.props.tripReport.durationAverage}
-                    </CardTitle>
-                  </CardHeader>
-                </Card>
-              </Col>
-              <Col lg="2">
-                <Card className="card-chart">
-                  <CardHeader>
-                    <h5 className="card-category">Average Maximum Speed</h5>
-                    <CardTitle tag="h3">
-                      <i className="tim-icons icon-chart-bar-32 text-info" /> {this.props.tripReport.maxSpeedAverage}
-                    </CardTitle>
-                  </CardHeader>
-                </Card>
-              </Col>
-            </Row>
-            <Row>
-              <Col lg="12">
-                <Card className="card-chart">
-                  <CardHeader>
-                    <h5 className="card-category">Speed Trends</h5>
-                    <CardTitle tag="h3">
-                      <i className="tim-icons icon-bell-55 text-info" /> {this.props.tripReport.maxSpeedAverage}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardBody>
-                    <div className="chart-area">
-                      <Line
-                        data={{ labels: this.props.tripReport.speedTrends.map((_, index) => index), datasets: [{ backgroundColor: "#d346b1", label: "Trips", data: this.props.tripReport.speedTrends.map(val => val) }] }}
-                        options={chartExample2.options}
-                      />
-                    </div>
-                  </CardBody>
-                </Card>
-              </Col>
-              <Col lg="12">
-                <Card className="card-chart">
-                  <CardHeader>
-                    <h5 className="card-category">Distance Trends</h5>
-                    <CardTitle tag="h3">
-                      <i className="tim-icons icon-delivery-fast text-primary" />{" "}
-                      {this.props.tripReport.distanceTotal}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardBody>
-                    <div className="chart-area">
-                      <Line
-                        data={{ labels: this.props.tripReport.distanceTrends.map((_, index) => index), datasets: [{ backgroundColor: "#1f8ef1", label: "Distance", data: this.props.tripReport.distanceTrends.map(val => val) }] }}
-                        options={chartExample3.options}
-                      />
-                    </div>
-                  </CardBody>
-                </Card>
-              </Col>
-              <Col lg="12">
-                <Card className="card-chart">
-                  <CardHeader>
-                    <h5 className="card-category">Fuel Trends</h5>
-                    <CardTitle tag="h3">
-                      <i className="tim-icons icon-send text-success" /> {this.props.tripReport.fuelAverage}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardBody>
-                    <div className="chart-area">
-                      <Line
-                        data={{ labels: this.props.tripReport.fuelTrends.map((_, index) => index), datasets: [{ backgroundColor: "aliceblue", label: "Fuel", data: this.props.tripReport.fuelTrends.map(val => val) }] }}
-                        options={chartExample4.options}
-                      />
-                    </div>
-                  </CardBody>
-                </Card>
-              </Col>
-            </Row></div>}
-          {this.props.summaryReport && <div>
-            <Row>
-              <Col lg="12">
-                <Card className="card-chart">
-                  <CardHeader>
-                    <h5 className="card-category">Summary Report</h5>
-                    <ToCSV data={this.props.summaryReport} filename={`SummaryReport${moment().format('YYYY-MM-DD H:m:s')}.csv`}></ToCSV>
-                  </CardHeader>
-                  <CardBody>
-                    <div className="summary-table">
-                      <Table responsive>
-                        <thead>
-                          <tr>
-                            <th>Name</th>
-                            <th>Max Speed</th>
-                            <th>Average Speed</th>
-                            <th>Distance</th>
-                            <th>Fuel</th>
-                            <th>Engine Hours</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {this.props.summaryReport.map((summary, index) => (
-                            <tr key={index}>
-                              <td>{summary.name}</td>
-                              <td>{summary.maxSpeed}</td>
-                              <td>{summary.averageSpeed}</td>
-                              <td>{summary.distance}</td>
-                              <td>{summary.fuel}</td>
-                              <td>{summary.engineHours}</td>
+          {this.props.tripReport && (
+            <div>
+              <Row>
+                <Col lg="2">
+                  <Card className="card-chart">
+                    <CardHeader>
+                      <h5 className="card-category">Total # of Trips</h5>
+                      <CardTitle tag="h3">
+                        <i className="tim-icons icon-cart text-info" />{" "}
+                        {this.props.tripReport.trips}
+                      </CardTitle>
+                    </CardHeader>
+                  </Card>
+                </Col>
+                <Col lg="2">
+                  <Card className="card-chart">
+                    <CardHeader>
+                      <h5 className="card-category">Average Speed</h5>
+                      <CardTitle tag="h3">
+                        <i className="tim-icons icon-delivery-fast text-info" />{" "}
+                        {this.props.tripReport.speedAverage}
+                      </CardTitle>
+                    </CardHeader>
+                  </Card>
+                </Col>
+                <Col lg="2">
+                  <Card className="card-chart">
+                    <CardHeader>
+                      <h5 className="card-category">Average Fuel Used</h5>
+                      <CardTitle tag="h3">
+                        <i className="tim-icons icon-money-coins text-info" />{" "}
+                        {this.props.tripReport.fuelAverage} L
+                      </CardTitle>
+                    </CardHeader>
+                  </Card>
+                </Col>
+                <Col lg="2">
+                  <Card className="card-chart">
+                    <CardHeader>
+                      <h5 className="card-category">Total Distance Covered</h5>
+                      <CardTitle tag="h3">
+                        <i className="tim-icons icon-compass-05 text-info" />{" "}
+                        {this.props.tripReport.distanceTotal}
+                      </CardTitle>
+                    </CardHeader>
+                  </Card>
+                </Col>
+                <Col lg="2">
+                  <Card className="card-chart">
+                    <CardHeader>
+                      <h5 className="card-category">Average Trip Duration</h5>
+                      <CardTitle tag="h3">
+                        <i className="tim-icons icon-globe-2 text-info" />{" "}
+                        {this.props.tripReport.durationAverage}
+                      </CardTitle>
+                    </CardHeader>
+                  </Card>
+                </Col>
+                <Col lg="2">
+                  <Card className="card-chart">
+                    <CardHeader>
+                      <h5 className="card-category">Average Maximum Speed</h5>
+                      <CardTitle tag="h3">
+                        <i className="tim-icons icon-chart-bar-32 text-info" />{" "}
+                        {this.props.tripReport.maxSpeedAverage}
+                      </CardTitle>
+                    </CardHeader>
+                  </Card>
+                </Col>
+              </Row>
+              <Row>
+                <Col lg="12">
+                  <Card className="card-chart">
+                    <CardHeader>
+                      <h5 className="card-category">Speed Trends</h5>
+                      <CardTitle tag="h3">
+                        <i className="tim-icons icon-bell-55 text-info" />{" "}
+                        {this.props.tripReport.maxSpeedAverage}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardBody>
+                      <div className="chart-area">
+                        <Line
+                          data={{
+                            labels: this.props.tripReport.speedTrends.map(
+                              (_, index) => index
+                            ),
+                            datasets: [
+                              {
+                                backgroundColor: "#d346b1",
+                                label: "Trips",
+                                data: this.props.tripReport.speedTrends.map(
+                                  val => val
+                                )
+                              }
+                            ]
+                          }}
+                          options={chartExample2.options}
+                        />
+                      </div>
+                    </CardBody>
+                  </Card>
+                </Col>
+                <Col lg="12">
+                  <Card className="card-chart">
+                    <CardHeader>
+                      <h5 className="card-category">Distance Trends</h5>
+                      <CardTitle tag="h3">
+                        <i className="tim-icons icon-delivery-fast text-primary" />{" "}
+                        {this.props.tripReport.distanceTotal}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardBody>
+                      <div className="chart-area">
+                        <Line
+                          data={{
+                            labels: this.props.tripReport.distanceTrends.map(
+                              (_, index) => index
+                            ),
+                            datasets: [
+                              {
+                                backgroundColor: "#1f8ef1",
+                                label: "Distance",
+                                data: this.props.tripReport.distanceTrends.map(
+                                  val => val
+                                )
+                              }
+                            ]
+                          }}
+                          options={chartExample3.options}
+                        />
+                      </div>
+                    </CardBody>
+                  </Card>
+                </Col>
+                <Col lg="12">
+                  <Card className="card-chart">
+                    <CardHeader>
+                      <h5 className="card-category">Fuel Trends</h5>
+                      <CardTitle tag="h3">
+                        <i className="tim-icons icon-send text-success" />{" "}
+                        {this.props.tripReport.fuelAverage}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardBody>
+                      <div className="chart-area">
+                        <Line
+                          data={{
+                            labels: this.props.tripReport.fuelTrends.map(
+                              (_, index) => index
+                            ),
+                            datasets: [
+                              {
+                                backgroundColor: "aliceblue",
+                                label: "Fuel",
+                                data: this.props.tripReport.fuelTrends.map(
+                                  val => val
+                                )
+                              }
+                            ]
+                          }}
+                          options={chartExample4.options}
+                        />
+                      </div>
+                    </CardBody>
+                  </Card>
+                </Col>
+              </Row>
+            </div>
+          )}
+          {this.props.summaryReport && (
+            <div>
+              <Row>
+                <Col lg="12">
+                  <Card className="card-chart">
+                    <CardHeader>
+                      <h5 className="card-category">Summary Report</h5>
+                      <ToCSV
+                        data={this.props.summaryReport}
+                        filename={`SummaryReport${moment().format(
+                          "YYYY-MM-DD H:m:s"
+                        )}.csv`}
+                      ></ToCSV>
+                    </CardHeader>
+                    <CardBody>
+                      <div className="summary-table">
+                        <Table responsive>
+                          <thead>
+                            <tr>
+                              <th>Name</th>
+                              <th>Max Speed</th>
+                              <th>Average Speed</th>
+                              <th>Distance</th>
+                              <th>Fuel</th>
+                              <th>Engine Hours</th>
                             </tr>
-                          ))}
-                        </tbody>
-                      </Table>
-                    </div>
-                  </CardBody>
-                </Card>
-              </Col>
-            </Row>
-          </div>
-          }
-          {
-            this.props.stopReport && <div>
+                          </thead>
+                          <tbody>
+                            {this.props.summaryReport.map((summary, index) => (
+                              <tr key={index}>
+                                <td>{summary.name}</td>
+                                <td>{summary.maxSpeed}</td>
+                                <td>{summary.averageSpeed}</td>
+                                <td>{summary.distance}</td>
+                                <td>{summary.fuel}</td>
+                                <td>{summary.engineHours}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </Table>
+                      </div>
+                    </CardBody>
+                  </Card>
+                </Col>
+              </Row>
+            </div>
+          )}
+          {this.props.stopReport && (
+            <div>
               <Row>
                 <Col lg="12">
                   <Card className="card-chart">
                     <CardHeader>
                       <h5 className="card-category">Stop Report</h5>
-                      <ToCSV data={this.props.stopReport} filename={`StopReport${moment().format('YYYY-MM-DD H:m:s')}.csv`}></ToCSV>
+                      <ToCSV
+                        data={this.props.stopReport}
+                        filename={`StopReport${moment().format(
+                          "YYYY-MM-DD H:m:s"
+                        )}.csv`}
+                      ></ToCSV>
                     </CardHeader>
                     <CardBody>
                       <div className="summary-table">
@@ -308,7 +434,12 @@ class Dashboard extends React.Component {
                           <tbody>
                             {this.props.stopReport.map((stop, index) => (
                               <tr key={index}>
-                                <td>{stop.name}</td>
+                                <td>
+                                  <Button
+                                    onClick={() => this.setStop(stop)}
+                                    color="default"
+                                  >{stop.name}</Button>
+                                </td>
                                 <td>{stop.duration}</td>
                                 <td>{stop.start}</td>
                                 <td>{stop.end}</td>
@@ -326,15 +457,20 @@ class Dashboard extends React.Component {
                 </Col>
               </Row>
             </div>
-          }
-          {
-            this.props.eventReport && <div>
+          )}
+          {this.props.eventReport && (
+            <div>
               <Row>
                 <Col lg="12">
                   <Card className="card-chart">
                     <CardHeader>
                       <h5 className="card-category">Event Report</h5>
-                      <ToCSV data={this.props.eventReport} filename={`EventReport${moment().format('YYYY-MM-DD H:m:s')}.csv`}></ToCSV>
+                      <ToCSV
+                        data={this.props.eventReport}
+                        filename={`EventReport${moment().format(
+                          "YYYY-MM-DD H:m:s"
+                        )}.csv`}
+                      ></ToCSV>
                     </CardHeader>
                     <CardBody>
                       <div className="summary-table">
@@ -362,7 +498,35 @@ class Dashboard extends React.Component {
                 </Col>
               </Row>
             </div>
-          }
+          )}
+          {this.state.showStopModal === true && (
+            <Row>
+              <Col md="12" lg="12" style={{ marginTop: "1%" }}>
+                <Modal
+                  isOpen={this.state.showStopModal}
+                  toggle={this.toggalModal}
+                  size="lg"
+                >
+                  <ModalHeader
+                    className="justify-content-center"
+                    toggle={this.toggalModal}
+                  >
+                    Stop Location
+                  </ModalHeader>
+                  <ModalBody>
+                    <Map
+                      googleMapURL={this.GOOGLE_MAPS_URL}
+                      loadingElement={<p>Loading maps...</p>}
+                      containerElement={<div className="map-container" />}
+                      mapElement={<div className="map" />}
+                      center={this.state.currentStop}
+                      devices={[this.state.currentStop]}
+                    ></Map>
+                  </ModalBody>
+                </Modal>
+              </Col>
+            </Row>
+          )}
         </div>
       </>
     );
@@ -371,10 +535,12 @@ class Dashboard extends React.Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchReport: (ids = [], type, startDate, endDate) => dispatch(fetchReport(ids, type, startDate, endDate, true)),
+    fetchReport: (ids = [], type, startDate, endDate) =>
+      dispatch(fetchReport(ids, type, startDate, endDate, true)),
     resetReports: () => dispatch(resetReports()),
     userGroups: () => dispatch(userGroups()),
-    showNotification: (title, message) => dispatch(showNotification({ title, message }))
+    showNotification: (title, message) =>
+      dispatch(showNotification({ title, message }))
   };
 };
 
@@ -389,7 +555,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Dashboard);
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
