@@ -13,11 +13,7 @@ import {
   Col
 } from "reactstrap";
 
-import {
-  userDrivers,
-  deleteDriver,
-  setDriver
-} from "../../Redux/actions/driverActions";
+import { userDrivers } from "../../Redux/actions/driverActions";
 
 import "./Index.css";
 
@@ -47,7 +43,6 @@ class Index extends React.Component {
                           <th>License Number</th>
                           <th>License Expiry Date</th>
                           <th>Address</th>
-                          <th>Actions</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -55,23 +50,15 @@ class Index extends React.Component {
                           {this.props.drivers.map(driver => {
                             return (
                               <tr key={driver.uniqueId}>
-                                <td>{driver.uniqueId}</td>
+                                <td>
+                                  <Link to={`/admin/driver/view/${driver.id}`}>
+                                    {driver.uniqueId}
+                                  </Link>
+                                </td>
                                 <td>{driver.name}</td>
                                 <td>{driver.attributes.licenseNumber}</td>
                                 <td>{driver.attributes.licenseExpiryDate}</td>
                                 <td>{driver.attributes.homeAddress}</td>
-                                <td>
-                                  <Link
-                                    onClick={ () => { this.props.setDriver(driver); this.props.history.push(`/admin/driver/edit/${driver.id}`) }}
-                                  >
-                                    - Edit
-                                  </Link><br />
-                                  <Link
-                                    onClick={ () => { this.props.deleteDriver(driver.id) }}
-                                  >
-                                    - Delete
-                                  </Link><br />
-                                </td>
                               </tr>
                             );
                           })}
@@ -100,13 +87,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    userDrivers: () => dispatch(userDrivers()),
-    setDriver: payload => dispatch(setDriver(payload)),
-    deleteDriver: id => dispatch(deleteDriver(id))
+    userDrivers: () => dispatch(userDrivers())
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Index);
+export default connect(mapStateToProps, mapDispatchToProps)(Index);
