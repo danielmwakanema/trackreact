@@ -1,7 +1,8 @@
 import TraccarAPI from "../../lib/TraccarAPI";
 import {
   GET_USER_GEOFENCES_SUCCESS,
-  RESET_USER_GEOFENCES_LIST
+  RESET_USER_GEOFENCES_LIST,
+  SET_GEOFENCE
 } from "./actionTypes";
 
 import { requestSuccess, requestFailed } from "./genericActions";
@@ -12,6 +13,8 @@ const cred = state =>
 export const resetUserGeofencesList = () => {
   return { type: RESET_USER_GEOFENCES_LIST };
 };
+
+export const setGeofence = payload => ({ type: SET_GEOFENCE, payload });
 
 const getUserGeofencesSuccess = payload => {
   return { type: GET_USER_GEOFENCES_SUCCESS, payload: { geofences: payload } };
