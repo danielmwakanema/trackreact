@@ -47,7 +47,13 @@ class Index extends React.Component {
                           {this.props.geofences.map(geofence => {
                             return (
                               <tr key={geofence.id}>
-                                <td>{geofence.name}</td>
+                                <td>
+                                  <Link
+                                    to={`/admin/geofence/view/${geofence.id}`}
+                                  >
+                                    {geofence.name}
+                                  </Link>
+                                </td>
                                 <td>{geofence.description}</td>
                               </tr>
                             );
@@ -81,7 +87,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Index);
+export default connect(mapStateToProps, mapDispatchToProps)(Index);
