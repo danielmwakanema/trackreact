@@ -62,7 +62,7 @@ class Edit extends React.Component {
             <Col md="7">
               <Card>
                 <CardHeader>
-                  <h5 className="title">Add Driver</h5>
+                  <h5 className="title">Edit Driver</h5>
                 </CardHeader>
                 <CardBody>
                   <Form>
