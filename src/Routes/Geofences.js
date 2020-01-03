@@ -1,6 +1,7 @@
 import Add from '../views/Geofences/Add';
 import Index from '../views/Geofences/Index';
 import View from '../views/Geofences/View';
+import Edit from '../views/Geofences/Edit';
 
 export default [
   {
@@ -15,6 +16,13 @@ export default [
     name: "View Geofence",
     icon: "tim-icons icon-simple-add",
     component: View,
+    layout: "/admin"
+  },
+  {
+    path: "/geofence/edit/:id",
+    name: "Edit Geofence",
+    icon: "tim-icons icon-simple-add",
+    component: Edit,
     layout: "/admin"
   },
   {
