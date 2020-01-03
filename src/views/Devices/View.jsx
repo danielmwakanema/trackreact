@@ -7,7 +7,7 @@ import {
   CardSubtitle,
   CardBody,
   CardTitle,
-  CardText,
+  CardText
 } from "reactstrap";
 import { Link } from "react-router-dom";
 import moment from "moment";
@@ -16,6 +16,8 @@ import TraccarAPI from "../../lib/TraccarAPI";
 import { showNotification } from "../../Redux/actions/notificationActions";
 import { setDevice, deleteDevice } from "../../Redux/actions/deviceActions";
 import Map from "../../components/Maps/NormalMap";
+
+import "./View.css";
 
 const mapDispatchToProps = dispatch => {
   return {
@@ -80,52 +82,74 @@ export default connect(
           <div className="content">
             {this.state.device !== null && (
               <Row>
-                <Col md="10">
+                <Col md="12">
                   <Card>
                     <CardBody>
                       <CardTitle>
-                        <h3>{this.state.device.name}</h3>
+                        <h4>{this.state.device.name} (ID: {this.state.device.uniqueId})</h4>
                       </CardTitle>
                       <CardSubtitle className="mb-2 text-muted">
-                        UNIQUE IDENTIFIER: {this.state.device.uniqueId}
                         <div>
-                        <Link
-                          onClick={() => {
-                            this.props.setDevice(this.state.device);
-                            this.props.history.push(
-                              `/admin/device/edit/${this.state.device.id}`
-                            );
-                          }}
-                        > Edit
-                        </Link><br />
-                        <Link
-                          onClick={() => {
-                            this.props.deleteDevice(this.state.device.id);
-                          }}
-                        >
-                          Delete
-                        </Link><br />
-                        <Link to={`/admin/device/addToGroup/${this.state.device.id}`}>
-                          Add to Group
-                        </Link><br />
-                        <Link to={`/admin/device/addToGeofence/${this.state.device.id}`}>
-                          Add to Geofence
-                        </Link>
+                          <a
+                            style={{ color: "#ba54f5" }}
+                            onClick={() => {
+                              this.props.setDevice(this.state.device);
+                              this.props.history.push(
+                                `/admin/device/edit/${this.state.device.id}`
+                              );
+                            }}
+                          >
+                            {" "}
+                            Edit
+                          </a>
+                          <a
+                            style={{ color: "#ba54f5" }}
+                            onClick={() => {
+                              this.props.deleteDevice(this.state.device.id);
+                            }}
+                          >
+                            Delete
+                          </a>
+                          <Link
+                            to={`/admin/device/addToGroup/${this.state.device.id}`}
+                          >
+                            Add to Group
+                          </Link>
+                          <Link
+                            to={`/admin/device/addToGeofence/${this.state.device.id}`}
+                          >
+                            Add to Geofence
+                          </Link>
                         </div>
                       </CardSubtitle>
                       <CardText>
-                        <h4>
-                          Status: {this.state.device.status}
-                          <br />
-                          Disabled: {this.state.device.status ? "Yes" : "No"}
-                          <br />
-                          Last Update: {this.state.device.lastUpdate}
-                          <br />
-                          Model: {this.state.device.category}
-                          <br />
-                          Category: {this.state.device.category}
-                          <br />
-                        </h4>
+                        <hr />
+                        <table>
+                          <tbody>
+                            <tr>
+                              <td>Status:</td>
+                              <td>{String(this.state.device.status).toUpperCase()}</td>
+                            </tr>
+                            <tr>
+                              <td>Disabled:</td>
+                              <td>
+                                {this.state.device.disabled ? "Yes" : "No"}
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Last Update:</td>
+                              <td>{moment(this.state.device.lastUpdate).format('YYYY-MM-DD H:m:s')}</td>
+                            </tr>
+                            <tr>
+                              <td>Category:</td>
+                              <td>{this.state.device.category}</td>
+                            </tr>
+                            <tr>
+                              <td></td>
+                              <td></td>
+                            </tr>
+                          </tbody>
+                        </table>
                       </CardText>
                     </CardBody>
                   </Card>
@@ -133,8 +157,8 @@ export default connect(
               </Row>
             )}
             {this.state.position !== null && (
-              <Row className>
-                <Col md="10">
+              <Row>
+                <Col md="12">
                   <Map
                     devices={[
                       {
