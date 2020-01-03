@@ -1,120 +1,135 @@
-import React from "react";
+import React, { Component } from "react";
 import { connect } from "react-redux";
-
-// reactstrap components
 import {
-  Button,
-  Card,
-  CardHeader,
-  CardBody,
-  CardFooter,
   Row,
-  Col
+  Col,
+  Card,
+  CardBody,
+  CardTitle,
+  CardText,
+  UncontrolledDropdown,
+  DropdownMenu,
+  DropdownItem,
+  Button
 } from "reactstrap";
 
-import { viewDevice } from "../../Redux/actions/deviceActions";
+import TraccarAPI from "../../lib/TraccarAPI";
+import { showNotification } from "../../Redux/actions/notificationActions";
+import { setGeofence } from "../../Redux/actions/geofenceActions";
 
-class View extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.handleInputChange = this.handleInputChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.inputIsValid = this.inputIsValid.bind(this);
-    this.prepPayload = this.prepPayload.bind(this);
-    this.createDevice = this.createDevice.bind(this);
-  }
-
-  componentDidMount() {
-    this.props.viewDevice(this.props.match.params.id);
-  }
-
-  handleInputChange = event => {
-    this.setState({ [event.target.name]: event.target.value });
-  };
-
-  async createDevice() {
-  }
-
-  async handleSubmit(event) {
-    event.preventDefault();
-    if (this.inputIsValid()) {
-      await this.createDevice();
-    } else {
-      alert("The specified input is not valid.");
-    }
-  }
-
-  inputIsValid() {
-    for (const [, val] of Object.entries(this.state)) {
-      if (val === "" || val === undefined) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  prepPayload = () => {
-    return {
-      name: this.state.name,
-      uniqueId: this.state.uniqueId,
-      status: document.getElementById("status").value,
-      disabled: Boolean(document.getElementById("disabled").value),
-      category: this.state.category,
-      model: this.state.model
-    };
-  };
-
-  render() {
-    return (
-      <>
-        <div className="content">
-          <Row>
-            <Col md="7">
-              <Card>
-                <CardHeader>
-                  <h5 className="title">View Geofence</h5>
-                </CardHeader>
-                <CardBody>
-                  <table>
-                    <tbody>
-                      <tr>
-                        <td>Name:</td>
-                        <td></td>
-                      </tr>
-                      <tr>
-                        <td>Description:</td>
-                        <td></td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </CardBody>
-                <CardFooter>
-                  <Button
-                    className="btn-fill"
-                    color="primary"
-                    type="submit"
-                    onClick={this.handleSubmit}
-                  >
-                    Save
-                  </Button>
-                </CardFooter>
-              </Card>
-            </Col>
-          </Row>
-        </div>
-      </>
-    );
-  }
-}
+import "./View.css";
 
 const mapDispatchToProps = dispatch => {
   return {
-    viewDevice: deviceId => dispatch(viewDevice(deviceId))
+    showNotification: payload => dispatch(showNotification(payload)),
+    setGeofence: geofence => dispatch(setGeofence(geofence))
   };
 };
 
+const mapStateToProps = state => ({
+  auth: { email: state.User.email, password: state.User.password },
+  geofences: state.Geofence.geofences
+});
+
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
-)(View);
+)(
+  class extends Component {
+    constructor(props) {
+      super(props);
+      this.state = {
+        id: Number(this.props.match.params.id),
+        geofence: null,
+        client: TraccarAPI(this.props.auth)
+      };
+    }
+
+    componentDidMount() {
+      try {
+        const geofence = this.get(this.state.id);
+        this.setState(Object.assign({}, this.state, { geofence }));
+      } catch (e) {
+        this.error(e);
+      }
+    }
+
+    get = id => this.props.geofences.filter(geofence => geofence.id === id)[0];
+
+    edit = () => {
+      const geofence = this.state.geofence;
+      this.props.setGeofence(geofence);
+      this.props.history.push(`/admin/geofence/edit/${geofence.id}`);
+    };
+
+    delete = () => {
+      this.state.client.delete(`/geofences/${this.state.geofence.id}`)
+        .then(() => this.props.history.push("/admin/geofences"))
+        .catch(this.error);
+    };
+
+    error = error => this.props.showNotification({ title: 'Error', message: error.message});
+
+    render() {
+      return (
+        <>
+          <div className="content">
+            {this.state.geofence !== null && (
+              <Row>
+                <Col md="12">
+                  <Card>
+                    <CardBody>
+                      <CardTitle>
+                        <h4 className>
+                          {this.state.geofence.name}
+                        </h4>
+                        <UncontrolledDropdown>
+                          <Button
+                            className="btn-round btn-icon"
+                            color="info"
+                            caret
+                            data-toggle="dropdown"
+                          >
+                            <i className="tim-icons icon-settings" />
+                          </Button>
+                          <DropdownMenu>
+                            <DropdownItem onClick={this.edit}>
+                              Edit
+                            </DropdownItem>
+                            <DropdownItem onClick={this.delete}>
+                              Delete
+                            </DropdownItem>
+                          </DropdownMenu>
+                        </UncontrolledDropdown>
+                      </CardTitle>
+                      <CardText>
+                        <hr />
+                        <table>
+                          <tbody>
+                            <tr>
+                              <td>Description:</td>
+                              <td>
+                                {this.state.geofence.description}
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </CardText>
+                    </CardBody>
+                  </Card>
+                </Col>
+              </Row>
+            )}
+            {this.state.geofence === null && (
+              <Row>
+                <Col md="8">
+                  <h4>No geofence data at the moment.</h4>
+                </Col>
+              </Row>
+            )}
+          </div>
+        </>
+      );
+    }
+  }
+);
