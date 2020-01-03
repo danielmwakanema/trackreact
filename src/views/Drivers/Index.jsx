@@ -41,8 +41,6 @@ class Index extends React.Component {
                           <th>Unique Identifier</th>
                           <th>Name</th>
                           <th>License Number</th>
-                          <th>License Expiry Date</th>
-                          <th>Address</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -57,8 +55,6 @@ class Index extends React.Component {
                                 </td>
                                 <td>{driver.name}</td>
                                 <td>{driver.attributes.licenseNumber}</td>
-                                <td>{driver.attributes.licenseExpiryDate}</td>
-                                <td>{driver.attributes.homeAddress}</td>
                               </tr>
                             );
                           })}
