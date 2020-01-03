@@ -25,7 +25,8 @@ class Add extends React.Component {
     "uniqueId",
     "licenseNumber",
     "licenseExpiryDate",
-    "homeAddress"
+    "homeAddress",
+    "phoneNumber"
   ];
 
   handleSubmit = () => {
@@ -46,7 +47,8 @@ class Add extends React.Component {
       attributes: {
         licenseNumber: payload.licenseNumber,
         licenseExpiryDate: payload.licenseExpiryDate,
-        homeAddress: payload.homeAddress
+        homeAddress: payload.homeAddress,
+        phoneNumber: payload.phoneNumber
       }
     };
   };
@@ -119,6 +121,20 @@ class Add extends React.Component {
                             type="date"
                             id="licenseExpiryDate"
                             name="licenseExpiryDate"
+                          />
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col className="pr-md-1" md="11">
+                        <FormGroup>
+                          <label>Phone Number</label>
+                          <Input
+                            defaultValue=""
+                            placeholder="Phone number"
+                            type="tel"
+                            id="phoneNumber"
+                            name="phoneNumber"
                           />
                         </FormGroup>
                       </Col>
