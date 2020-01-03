@@ -48,7 +48,6 @@ class Index extends React.Component {
                           <th>Disabled</th>
                           <th>Model</th>
                           <th>Category</th>
-                          <th>Actions</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -56,15 +55,16 @@ class Index extends React.Component {
                           {this.props.devices.map(device => {
                             return (
                               <tr key={device.uniqueId}>
-                                <td>{device.uniqueId}</td>
+                                <td>
+                                  <Link to={`/admin/device/view/${device.id}`}>
+                                    {device.uniqueId}
+                                  </Link>
+                                </td>
                                 <td>{device.name}</td>
                                 <td>{device.status}</td>
                                 <td>{device.disabled ? "Yes" : "No"}</td>
                                 <td>{device.model}</td>
                                 <td>{device.category}</td>
-                                <td>
-                                  <Link to={`/admin/device/view/${device.id}`}>View</Link><br />
-                                </td>
                               </tr>
                             );
                           })}
