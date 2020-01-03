@@ -13,7 +13,7 @@ import {
   Col
 } from "reactstrap";
 
-import { getUsers, setUser, deleteUser } from "../../Redux/actions/userActions";
+import { getUsers } from "../../Redux/actions/userActions";
 
 import "./Index.css";
 
@@ -41,10 +41,6 @@ class Index extends React.Component {
                           <th>Name</th>
                           <th>Email</th>
                           <th>Is an admin?</th>
-                          <th>Is disabled?</th>
-                          <th>Device Limit</th>
-                          <th>User Limit</th>
-                          <th>Actions</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -52,32 +48,11 @@ class Index extends React.Component {
                           {this.props.users.map(user => {
                             return (
                               <tr key={user.id}>
-                                <td>{user.name}</td>
+                                <td><Link to={`/admin/user/view/${user.id}`}>
+                                    {user.name}
+                                  </Link></td>
                                 <td>{user.email}</td>
                                 <td>{user.administrator ? "Yes" : "No "}</td>
-                                <td>{user.disabled ? "Yes" : "No "}</td>
-                                <td>{user.deviceLimit}</td>
-                                <td>{user.userLimit}</td>
-                                <td>
-                                  <Link
-                                    onClick={() => {
-                                      this.props.setUser(user);
-                                      this.props.history.push(
-                                        `/admin/user/edit/${user.id}`
-                                      );
-                                    }}
-                                  >
-                                    Edit
-                                  </Link>
-                                  <br />
-                                  <Link
-                                    onClick={() => {
-                                      this.props.deleteUser(user.id);
-                                    }}
-                                  >
-                                    Delete
-                                  </Link>
-                                </td>
                               </tr>
                             );
                           })}
@@ -106,9 +81,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    getUsers: () => dispatch(getUsers()),
-    setUser: payload => dispatch(setUser(payload)),
-    deleteUser: id => dispatch(deleteUser(id))
+    getUsers: () => dispatch(getUsers())
   };
 };
 
