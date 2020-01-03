@@ -4,12 +4,14 @@ import {
   Row,
   Col,
   Card,
-  CardSubtitle,
   CardBody,
   CardTitle,
-  CardText
+  CardText,
+  UncontrolledDropdown,
+  DropdownMenu,
+  DropdownItem,
+  Button
 } from "reactstrap";
-import { Link } from "react-router-dom";
 import moment from "moment";
 
 import TraccarAPI from "../../lib/TraccarAPI";
@@ -52,7 +54,7 @@ export default connect(
         const [device, position] = await this.devicePosition(this.state.id);
         this.setState(Object.assign({}, this.state, { device, position }));
       } catch (e) {
-        this.props.showNotification({ title: "Error", message: e.message });
+        this.error(e);
       }
     }
 
@@ -76,6 +78,30 @@ export default connect(
       return [`${day}T00:00:00Z`, `${day}T23:59:59Z`];
     };
 
+    edit = () => {
+      const device = this.state.device;
+      this.props.setDevice(device);
+      this.props.history.push(`/admin/device/edit/${device.id}`);
+    };
+
+    addToGroup = () =>
+      this.props.history.push(
+        `/admin/device/addToGroup/${this.state.device.id}`
+      );
+
+    addToGeofence = () =>
+      this.props.history.push(
+        `/admin/device/addToGeofence/${this.state.device.id}`
+      );
+
+    delete = () => {
+      this.state.client.delete(`/devices/${this.state.device.id}`)
+        .then(() => this.props.history.push("/admin/devices"))
+        .catch(this.error);
+    };
+
+    error = error => this.props.showNotification({ title: 'Error', message: error.message});
+
     render() {
       return (
         <>
@@ -86,49 +112,44 @@ export default connect(
                   <Card>
                     <CardBody>
                       <CardTitle>
-                        <h4>{this.state.device.name} (ID: {this.state.device.uniqueId})</h4>
+                        <h4 className>
+                          {this.state.device.name} (ID:{" "}
+                          {this.state.device.uniqueId})
+                        </h4>
+                        <UncontrolledDropdown>
+                          <Button
+                            className="btn-round btn-icon"
+                            color="info"
+                            caret
+                            data-toggle="dropdown"
+                          >
+                            <i className="tim-icons icon-settings" />
+                          </Button>
+                          <DropdownMenu>
+                            <DropdownItem onClick={this.edit}>
+                              Edit
+                            </DropdownItem>
+                            <DropdownItem onClick={this.addToGroup}>
+                              Add to Group
+                            </DropdownItem>
+                            <DropdownItem onClick={this.addToGeofence}>
+                              Add to Geofence
+                            </DropdownItem>
+                            <DropdownItem onClick={this.delete}>
+                              Delete
+                            </DropdownItem>
+                          </DropdownMenu>
+                        </UncontrolledDropdown>
                       </CardTitle>
-                      <CardSubtitle className="mb-2 text-muted">
-                        <div>
-                          <a
-                            style={{ color: "#ba54f5" }}
-                            onClick={() => {
-                              this.props.setDevice(this.state.device);
-                              this.props.history.push(
-                                `/admin/device/edit/${this.state.device.id}`
-                              );
-                            }}
-                          >
-                            {" "}
-                            Edit
-                          </a>
-                          <a
-                            style={{ color: "#ba54f5" }}
-                            onClick={() => {
-                              this.props.deleteDevice(this.state.device.id);
-                            }}
-                          >
-                            Delete
-                          </a>
-                          <Link
-                            to={`/admin/device/addToGroup/${this.state.device.id}`}
-                          >
-                            Add to Group
-                          </Link>
-                          <Link
-                            to={`/admin/device/addToGeofence/${this.state.device.id}`}
-                          >
-                            Add to Geofence
-                          </Link>
-                        </div>
-                      </CardSubtitle>
                       <CardText>
                         <hr />
                         <table>
                           <tbody>
                             <tr>
                               <td>Status:</td>
-                              <td>{String(this.state.device.status).toUpperCase()}</td>
+                              <td>
+                                {String(this.state.device.status).toUpperCase()}
+                              </td>
                             </tr>
                             <tr>
                               <td>Disabled:</td>
@@ -138,15 +159,15 @@ export default connect(
                             </tr>
                             <tr>
                               <td>Last Update:</td>
-                              <td>{moment(this.state.device.lastUpdate).format('YYYY-MM-DD H:m:s')}</td>
+                              <td>
+                                {moment(this.state.device.lastUpdate).format(
+                                  "YYYY-MM-DD H:m:s"
+                                )}
+                              </td>
                             </tr>
                             <tr>
                               <td>Category:</td>
                               <td>{this.state.device.category}</td>
-                            </tr>
-                            <tr>
-                              <td></td>
-                              <td></td>
                             </tr>
                           </tbody>
                         </table>
