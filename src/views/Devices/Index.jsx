@@ -45,9 +45,6 @@ class Index extends React.Component {
                           <th>Unique Identifier</th>
                           <th>Name</th>
                           <th>Status</th>
-                          <th>Disabled</th>
-                          <th>Model</th>
-                          <th>Category</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -62,9 +59,6 @@ class Index extends React.Component {
                                 </td>
                                 <td>{device.name}</td>
                                 <td>{device.status}</td>
-                                <td>{device.disabled ? "Yes" : "No"}</td>
-                                <td>{device.model}</td>
-                                <td>{device.category}</td>
                               </tr>
                             );
                           })}
