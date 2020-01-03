@@ -1,5 +1,6 @@
 import Add from '../views/User/Add';
 import Edit from '../views/User/Edit';
+import View from '../views/User/View';
 
 export default [
   {
@@ -14,6 +15,13 @@ export default [
     name: "Edit User",
     icon: "tim-icons icon-pencil",
     component: Edit,
+    layout: "/admin"
+  },
+  {
+    path: "/user/view/:id",
+    name: "View User",
+    icon: "tim-icons icon-pencil",
+    component: View,
     layout: "/admin"
   }
 ]
