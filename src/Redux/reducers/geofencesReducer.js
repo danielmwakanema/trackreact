@@ -1,6 +1,7 @@
 import {
   GET_USER_GEOFENCES_SUCCESS,
-  RESET_USER_GEOFENCES_LIST
+  RESET_USER_GEOFENCES_LIST,
+  SET_GEOFENCE
 } from "../actions/actionTypes";
 
 const init = {
@@ -14,6 +15,8 @@ export default (state = init, action) => {
       return Object.assign({}, state, action.payload);
     case RESET_USER_GEOFENCES_LIST:
       return Object.assign({}, state, { geofences: [] });
+    case SET_GEOFENCE:
+      return Object.assign({}, state, { geofence: action.payload });
     default:
       return state;
   }
