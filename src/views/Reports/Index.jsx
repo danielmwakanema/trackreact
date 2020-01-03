@@ -97,7 +97,7 @@ class Dashboard extends React.Component {
                           />
                         </FormGroup>
                       </Col>
-                      <Col className="pr-md-1 d-inline" md="4">
+                      <Col className="pr-md-1 d-inline" md="2">
                         <FormGroup>
                           <Input
                             id="run"
