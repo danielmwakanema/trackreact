@@ -119,6 +119,12 @@ export default connect(
                               </td>
                             </tr>
                             <tr>
+                              <td>Phone Number:</td>
+                              <td>
+                                {this.state.driver.attributes.phoneNumber || 'N/A'}
+                              </td>
+                            </tr>
+                            <tr>
                               <td>Home Address:</td>
                               <td>
                                 {this.state.driver.attributes.homeAddress}
